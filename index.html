@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		<title>ANN &amp; GA</title>
+		<style>
+			#Box
+			{
+				position: relative;
+				margin: 25px;
+				border: 1px solid black;
+			}
+			
+			.ant
+			{
+				position: absolute;
+				outline: 2px solid #777;
+			}
+			
+			.ant .antenna
+			{
+				position: absolute;
+				outline: 1px solid #333;
+			}
+			
+			.ant.species0, .ant.species0 .antenna { outline-color: #a66; }
+			.ant.species1, .ant.species1 .antenna { outline-color: #aa6; }
+			.ant.species2, .ant.species2 .antenna { outline-color: #6a6; }
+			.ant.species3, .ant.species3 .antenna { outline-color: #6aa; }
+			.ant.species4, .ant.species4 .antenna { outline-color: #66a; }
+			.ant.species5, .ant.species5 .antenna { outline-color: #a6a; }
+			
+			.food
+			{
+				position: absolute;
+				outline: 1px solid #f00;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="Box"></div>
+		
+		<!-- <script src="simulation.js"></script> -->
+		<script src="index.js" type="module"></script>
+	</body>
+</html>
