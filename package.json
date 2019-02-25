@@ -1,0 +1,17 @@
+{
+  "name": "antfarm",
+  "version": "2.0.0",
+  "description": "An artificial neural network driven by genetic algorithm.",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NemoStein/AntFarm.git"
+  },
+  "keywords": [],
+  "author": "NemoStein <contato@nemostein.com.br> (http://nemostein.com.br)",
+  "license": "CC-BY-4.0",
+  "bugs": {
+    "url": "https://github.com/NemoStein/AntFarm/issues"
+  },
+  "homepage": "https://github.com/NemoStein/AntFarm#readme"
+}
