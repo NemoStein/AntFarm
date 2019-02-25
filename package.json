@@ -3,6 +3,10 @@
   "version": "2.0.0",
   "description": "An artificial neural network driven by genetic algorithm.",
   "main": "index.js",
+  "scripts": {
+	"prestart": "npx copy ./src/**/* ./bin/antfarm",
+	"start": "npx http-server ./bin"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/NemoStein/AntFarm.git"
