@@ -26,20 +26,14 @@ export default class Formicary
 		this.pheromone = []
 	}
 
+	/**
+	 * @param {Number} x 
+	 * @param {Number} y 
+	 */
 	getFoodScentFrom(x, y)
 	{
-		return this.getScentFrom(x, y, this.food)
-	}
-
-	getPheromoneScentFrom(x, y)
-	{
-		return this.getScentFrom(x, y, this.pheromone)
-	}
-
-	getScentFrom(x, y, scents)
-	{
 		let scent = 0
-		for (const item of scents)
+		for (const item of this.food)
 		{
 			const squareDistance = Math.abs(item.x - x) ** 2 + Math.abs(item.y - y) ** 2
 			scent += item.scent / squareDistance
@@ -48,18 +42,64 @@ export default class Formicary
 		return scent
 	}
 
+	/**
+	 * @param {Number} x 
+	 * @param {Number} y 
+	 */
+	getPheromoneScentFrom(x, y)
+	{
+		let scent = 0
+		for (const item of this.pheromone)
+		{
+			const squareDistance = Math.abs(item.x - x) ** 2 + Math.abs(item.y - y) ** 2
+			scent += item.scent / squareDistance
+		}
+
+		return scent
+	}
+
+	/**
+	 * @param {Number} x 
+	 * @param {Number} y 
+	 */
 	getAnthillDirectionFrom(x, y)
 	{
 		return Math.atan2(this.anthill.y - y, this.anthill.x - x)
 	}
 
-	addFoodAt(x, y)
+	/**
+	 * @param {Number} x 
+	 * @param {Number} y 
+	 * @param {number} scent 
+	 */
+	dropFoodAt(x, y, scent)
 	{
-		this.food.push(new Food(x, y))
+		this.food.push(new Food(x, y, scent))
 	}
 
-	addPheromoneAt(x, y)
+	/**
+	 * @param {Number} x 
+	 * @param {Number} y 
+	 * @param {number} scent 
+	 */
+	dropPheromoneAt(x, y, scent)
 	{
-		this.pheromone.push(new Pheromone(x, y))
+		this.pheromone.push(new Pheromone(x, y, scent))
+	}
+
+	/**
+	 * @param {Number} x 
+	 * @param {Number} y 
+	 */
+	pickFoodAt(x, y)
+	{
+		for (const food of this.food)
+		{
+			if (food.x === x && food.y === y)
+			{
+				food.dropped = false
+				return food
+			}
+		}
 	}
 }
