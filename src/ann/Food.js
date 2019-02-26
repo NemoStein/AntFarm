@@ -10,6 +10,5 @@ export default class Food
 		this.x = x
 		this.y = y
 		this.scent = scent
-		this.dropped = true
 	}
 }

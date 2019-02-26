@@ -8,15 +8,17 @@ export default class Formicary
 	 * @param {Number} height Height of the formicary
 	 * @param {Number} anthillX X position of the anthill
 	 * @param {Number} anthillY Y position of the anthill
+	 * @param {Number} anthillRadius Radius of the anthill
 	 */
-	constructor(width, height, anthillX, anthillY)
+	constructor(width, height, anthillX, anthillY, anthillRadius)
 	{
 		this.width = width
 		this.height = height
 
 		this.anthill = {
 			x: anthillX,
-			y: anthillY
+			y: anthillY,
+			radius: anthillRadius,
 		}
 
 		/** @type {Food[]} */
@@ -90,16 +92,20 @@ export default class Formicary
 	/**
 	 * @param {Number} x 
 	 * @param {Number} y 
+	 * @returns {Number} Scent
 	 */
 	pickFoodAt(x, y)
 	{
-		for (const food of this.food)
+		for (let i = 0; i < this.food.length; i++)
 		{
+			const food = this.food[i];
 			if (food.x === x && food.y === y)
 			{
-				food.dropped = false
-				return food
+				this.food.splice(i, 1)
+				return food.scent
 			}
 		}
+
+		return 0
 	}
 }

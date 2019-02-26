@@ -9,7 +9,7 @@ export default class Ant
 	constructor(formicary)
 	{
 		this.formicary = formicary
-		
+
 		this.x = 0
 		this.y = 0
 		this.direction = 0
@@ -18,10 +18,10 @@ export default class Ant
 		this.dead = false
 
 		this.antennae = {
-			left: { x: 0, y: 0, },
-			right: { x: 0, y: 0, },
+			left: { x: 0, y: 0 },
+			right: { x: 0, y: 0 },
 		}
-		
+
 		/**
 		 * Brain input (6)
 		 * - Left food scent
@@ -34,7 +34,7 @@ export default class Ant
 		 * Brain output (2)
 		 * - Hold
 		 * - Direction
-		*/
+		 */
 		this.brain = new NeuralNetwork(6, 2)
 	}
 
@@ -49,14 +49,14 @@ export default class Ant
 		const right = this.direction + Math.PI / 6
 		this.antennae.right.x = this.x + Math.cos(right) * antennaeLength
 		this.antennae.right.y = this.y + Math.sin(right) * antennaeLength
-		
+
 		const leftFoodScent = this.formicary.getFoodScentFrom(this.antennae.left.x, this.antennae.left.y)
 		const rightFoodScent = this.formicary.getFoodScentFrom(this.antennae.right.x, this.antennae.right.y)
 		const leftPheromoneScent = this.formicary.getPheromoneScentFrom(this.antennae.left.x, this.antennae.left.y)
 		const rightPheromoneScent = this.formicary.getPheromoneScentFrom(this.antennae.right.x, this.antennae.right.y)
 		const anthillDirection = this.formicary.getAnthillDirectionFrom(this.x, this.y)
 		const carrying = this.cargo ? 1 : 0
-		
+
 		const [hold, direction] = this.brain.update(leftFoodScent, rightFoodScent, leftPheromoneScent, rightPheromoneScent, anthillDirection, carrying)
 	}
 }
