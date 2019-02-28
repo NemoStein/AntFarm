@@ -118,4 +118,9 @@ export default class Formicary
 	{
 		this.population.update()
 	}
+
+	endCurrentGeneration()
+	{
+		
+	}
 }

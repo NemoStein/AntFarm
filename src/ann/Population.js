@@ -9,6 +9,8 @@ export default class Population
 	 */
 	constructor(size, formicary)
 	{
+		this.formicary = formicary
+		
 		/** @type {Ant[]} */
 		this.ants = []
 
@@ -38,7 +40,7 @@ export default class Population
 		
 		if (allDead)
 		{
-			// Improvise, Adapt, Overcome
+			this.formicary.endCurrentGeneration()
 		}
 	}
 }
