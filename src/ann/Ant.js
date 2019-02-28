@@ -79,6 +79,11 @@ export default class Ant
 		this.x += travelX
 		this.y += travelY
 
+		if (this.x <= 0 || this.x >= this.formicary.width || this.y <= 0 || this.y >= this.formicary.height)
+		{
+			this.die()
+		}
+
 		if (this.travel > this.travelThreshold)
 		{
 			this.travel -= this.travelThreshold
@@ -97,5 +102,10 @@ export default class Ant
 		const right = this.direction + Math.PI / 6
 		this.antennae.right.x = this.x + Math.cos(right) * antennaeLength
 		this.antennae.right.y = this.y + Math.sin(right) * antennaeLength
+	}
+	
+	die()
+	{
+		this.dead = true
 	}
 }

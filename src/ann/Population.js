@@ -26,9 +26,19 @@ export default class Population
 
 	update()
 	{
+		let allDead = true
 		for (const ant of this.ants)
 		{
-			ant.update()
+			if (!ant.dead)
+			{
+				allDead = false
+				ant.update()
+			}
+		}
+		
+		if (allDead)
+		{
+			// Improvise, Adapt, Overcome
 		}
 	}
 }

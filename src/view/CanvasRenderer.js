@@ -49,7 +49,7 @@ export default class CanvarRenderer
 			for (const ant of this.formicary.population.ants)
 			{
 				//'#c33', '#cc3', '#3c3', '#3cc', '#33c', '#c3c'
-				this.context.fillStyle = 'gray'
+				this.context.fillStyle = ant.dead ? 'silver' : 'dimgray'
 				this.context.fillRect(ant.x + offsetX - 2, ant.y + offsetY - 2, 4, 4)
 				this.context.fillRect(ant.antennae.left.x + offsetX - 1, ant.antennae.left.y + offsetY - 1, 2, 2)
 				this.context.fillRect(ant.antennae.right.x + offsetX - 1, ant.antennae.right.y + offsetY - 1, 2, 2)
