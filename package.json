@@ -4,10 +4,7 @@
   "description": "An artificial neural network driven by genetic algorithm.",
   "main": "index.js",
   "scripts": {
-	"clean": "npx del-cli ./bin/antfarm",
-	"copy": "npx copy ./src/**/* ./bin/antfarm",
-	"prestart": "npm run clean && npm run copy",
-	"start": "npx http-server ./bin"
+	"start": "npx http-server ./src"
   },
   "repository": {
     "type": "git",
