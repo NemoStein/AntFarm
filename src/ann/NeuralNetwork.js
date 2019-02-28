@@ -1,10 +1,18 @@
 export default class NeuralNetwork
 {
+	/**
+	 * @param {number} inputNodeCount
+	 * @param {number} outputNodeCount
+	 */
 	constructor(inputNodeCount, outputNodeCount)
 	{
-
+		this.inputNodeCount = inputNodeCount
+		this.outputNodeCount = outputNodeCount
 	}
 
+	/**
+	 * @param {Number} x 
+	 */
 	sigmoid(x)
 	{
 		return 1 / (1 + Math.E ** -x)
@@ -16,6 +24,13 @@ export default class NeuralNetwork
 	 */
 	update(...inputs)
 	{
-		return [0, inputs[4] / Math.PI]
+		const output = []
+
+		for (let i = 0; i < this.outputNodeCount; i++)
+		{
+			output.push(Math.random() * 2 - 1)
+		}
+
+		return output
 	}
 }

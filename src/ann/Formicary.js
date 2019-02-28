@@ -10,8 +10,9 @@ export default class Formicary
 	 * @param {Number} anthillX X position of the anthill
 	 * @param {Number} anthillY Y position of the anthill
 	 * @param {Number} anthillRadius Radius of the anthill
+	 * @param {Number} populationSize Size of the population
 	 */
-	constructor(width, height, anthillX, anthillY, anthillRadius)
+	constructor(width, height, anthillX, anthillY, anthillRadius, populationSize)
 	{
 		this.width = width
 		this.height = height
@@ -27,9 +28,9 @@ export default class Formicary
 
 		/** @type {Pheromone[]} */
 		this.pheromone = []
-		
-		/** @type {Population[]} */
-		this.populations = []
+
+		/** @type {Population} */
+		this.population = new Population(populationSize, this)
 	}
 
 	/**
@@ -111,5 +112,10 @@ export default class Formicary
 		}
 
 		return 0
+	}
+
+	update()
+	{
+		this.population.update()
 	}
 }

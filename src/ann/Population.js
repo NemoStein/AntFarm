@@ -11,10 +11,24 @@ export default class Population
 	{
 		/** @type {Ant[]} */
 		this.ants = []
-		
-		while(size-- > 0)
+
+		while (size-- > 0)
 		{
-			this.ants.push(new Ant(formicary))
+			const ant = new Ant(formicary)
+
+			ant.x = formicary.anthill.x
+			ant.y = formicary.anthill.y
+			ant.update()
+
+			this.ants.push(ant)
+		}
+	}
+
+	update()
+	{
+		for (const ant of this.ants)
+		{
+			ant.update()
 		}
 	}
 }

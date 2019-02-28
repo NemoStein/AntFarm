@@ -12,11 +12,11 @@ export default class Ant
 
 		this.x = 0
 		this.y = 0
-		this.direction = 0
+		this.direction = Math.random() * Math.PI * 2
 		this.speed = 0.15
 		this.cargo = null
 		this.dead = false
-		
+
 		this.travel = 0
 		this.travelThreshold = 1 ** 2
 
@@ -39,19 +39,13 @@ export default class Ant
 		 * - Direction
 		 */
 		this.brain = new NeuralNetwork(6, 2)
+
+		this.updateAntenna()
 	}
 
 	update()
 	{
-		const antennaeLength = 6
-
-		const left = this.direction - Math.PI / 6
-		this.antennae.left.x = this.x + Math.cos(left) * antennaeLength
-		this.antennae.left.y = this.y + Math.sin(left) * antennaeLength
-
-		const right = this.direction + Math.PI / 6
-		this.antennae.right.x = this.x + Math.cos(right) * antennaeLength
-		this.antennae.right.y = this.y + Math.sin(right) * antennaeLength
+		this.updateAntenna()
 
 		const leftFoodScent = this.formicary.getFoodScentFrom(this.antennae.left.x, this.antennae.left.y)
 		const rightFoodScent = this.formicary.getFoodScentFrom(this.antennae.right.x, this.antennae.right.y)
@@ -61,7 +55,7 @@ export default class Ant
 		const carrying = this.cargo ? 1 : 0
 
 		const [hold, direction] = this.brain.update(leftFoodScent, rightFoodScent, leftPheromoneScent, rightPheromoneScent, anthillDirection, carrying)
-		
+
 		if (this.cargo && !hold)
 		{
 			this.formicary.dropFoodAt(this.x, this.y, this.cargo)
@@ -74,21 +68,34 @@ export default class Ant
 				this.cargo = food
 			}
 		}
-		
+
 		// This is VERY likely to cause problems!!!
 		this.direction = direction * Math.PI
-		
+
 		const travelX = Math.cos(this.direction) * this.speed
 		const travelY = Math.sin(this.direction) * this.speed
 		this.travel += travelX ** 2 + travelY ** 2
-		
+
 		this.x += travelX
 		this.y += travelY
-		
+
 		if (this.travel > this.travelThreshold)
 		{
 			this.travel -= this.travelThreshold
 			this.formicary.dropPheromoneAt(this.x, this.y, 1)
 		}
+	}
+
+	updateAntenna()
+	{
+		const antennaeLength = 6
+
+		const left = this.direction - Math.PI / 6
+		this.antennae.left.x = this.x + Math.cos(left) * antennaeLength
+		this.antennae.left.y = this.y + Math.sin(left) * antennaeLength
+
+		const right = this.direction + Math.PI / 6
+		this.antennae.right.x = this.x + Math.cos(right) * antennaeLength
+		this.antennae.right.y = this.y + Math.sin(right) * antennaeLength
 	}
 }
