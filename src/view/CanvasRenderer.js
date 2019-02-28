@@ -34,7 +34,7 @@ export default class CanvarRenderer
 			this.context.strokeStyle = 'blue'
 			this.context.stroke(anthillPath)
 
-			this.context.fillStyle = 'rgba(255, 0, 255, .1)'
+			this.context.fillStyle = 'rgba(255, 0, 255, .2)'
 			for (const { x, y } of this.formicary.pheromone)
 			{
 				this.context.fillRect(x + offsetX - 1, y + offsetY - 1, 2, 2)
