@@ -1,5 +1,5 @@
-import NeuralNetwork from './NeuralNetwork'
-import Formicary from './Formicary'
+import NeuralNetwork from './NeuralNetwork.js'
+import Formicary from './Formicary.js'
 
 export default class Ant
 {
@@ -13,9 +13,12 @@ export default class Ant
 		this.x = 0
 		this.y = 0
 		this.direction = 0
-		this.speed = 10
+		this.speed = 0.15
 		this.cargo = null
 		this.dead = false
+		
+		this.travel = 0
+		this.travelThreshold = 1 ** 2
 
 		this.antennae = {
 			left: { x: 0, y: 0 },
@@ -58,5 +61,34 @@ export default class Ant
 		const carrying = this.cargo ? 1 : 0
 
 		const [hold, direction] = this.brain.update(leftFoodScent, rightFoodScent, leftPheromoneScent, rightPheromoneScent, anthillDirection, carrying)
+		
+		if (this.cargo && !hold)
+		{
+			this.formicary.dropFoodAt(this.x, this.y, this.cargo)
+		}
+		else if (!this.cargo && hold)
+		{
+			const food = this.formicary.pickFoodAt(this.x, this.y)
+			if (food)
+			{
+				this.cargo = food
+			}
+		}
+		
+		// This is VERY likely to cause problems!!!
+		this.direction = direction * Math.PI
+		
+		const travelX = Math.cos(this.direction) * this.speed
+		const travelY = Math.sin(this.direction) * this.speed
+		this.travel += travelX ** 2 + travelY ** 2
+		
+		this.x += travelX
+		this.y += travelY
+		
+		if (this.travel > this.travelThreshold)
+		{
+			this.travel -= this.travelThreshold
+			this.formicary.dropPheromoneAt(this.x, this.y, 1)
+		}
 	}
 }

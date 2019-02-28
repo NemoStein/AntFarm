@@ -1,5 +1,6 @@
-import Food from './Food'
-import Pheromone from './Pheromone'
+import Food from './Food.js'
+import Pheromone from './Pheromone.js'
+import Population from './Population.js'
 
 export default class Formicary
 {
@@ -26,6 +27,9 @@ export default class Formicary
 
 		/** @type {Pheromone[]} */
 		this.pheromone = []
+		
+		/** @type {Population[]} */
+		this.populations = []
 	}
 
 	/**
