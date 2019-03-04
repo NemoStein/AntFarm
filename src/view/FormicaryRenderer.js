@@ -1,30 +1,23 @@
 import Formicary from '../ann/Formicary.js'
 
-export default class CanvarRenderer
+export default class FormicaryRenderer
 {
 	/**
-	 * @param {HTMLCanvasElement} canvas 
+	 * @param {CanvasRenderingContext2D} context 
 	 * @param {Formicary} formicary 
 	 */
-	constructor(canvas, formicary)
+	constructor(context, formicary)
 	{
-		this.canvas = canvas
-		this.context = canvas.getContext('2d')
-
+		this.context = context
 		this.formicary = formicary
 	}
 
 	update()
 	{
-		const width = this.canvas.width
-		const height = this.canvas.height
-
-		this.context.clearRect(0, 0, width, height)
-
 		if (this.formicary)
 		{
-			const offsetX = Math.round((width - this.formicary.width) / 2)
-			const offsetY = Math.round((height - this.formicary.height) / 2)
+			const offsetX = Math.round((this.context.canvas.width - this.formicary.width) / 2)
+			const offsetY = 120
 
 			this.context.strokeStyle = 'black'
 			this.context.strokeRect(offsetX, offsetY, this.formicary.width, this.formicary.height)
