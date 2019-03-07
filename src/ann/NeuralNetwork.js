@@ -79,22 +79,31 @@ export default class NeuralNetwork
 		let reroll
 		let input
 		let output
-		
+
 		// This will get stuck in a infinite loop in case of all input, hidden and output is already connected
 		do {
 			input = this.neurons[Math.floor(Math.random() * (this.neurons.length - this.outputSize))]
 			output = this.neurons[Math.floor(Math.random() * (this.neurons.length - this.inputSize) + this.inputSize)]
-			
+
 			reroll = false
+
+			if (output.layer <= input.layer)
+			{
+				reroll = true
+				continue
+			}
+
 			for (const synapse of this.synapses)
 			{
 				if (synapse.input === input && synapse.output === output)
 				{
 					reroll = true
+					continue
 				}
 			}
 		}
 		while (reroll)
+
 
 		const weight = Math.random() * 2 - 1
 		this.synapses.push(new Synapse(input, output, weight, currentInnovation++))

@@ -3,20 +3,9 @@ import FormicaryRenderer from './view/FormicaryRenderer.js'
 import NeuralNetworkRenderer from './view/NeuralNetworkRenderer.js'
 import NeuralNetwork from './ann/NeuralNetwork.js'
 
-const nn = new NeuralNetwork(6, 2)
-nn.addRandomSynapse()
-nn.addRandomSynapse()
-nn.addRandomSynapse()
-// nn.addRandomSynapse()
-// nn.addRandomSynapse()
-// nn.addRandomSynapse()
-// nn.addRandomSynapse()
-// nn.addRandomSynapse()
-// nn.addRandomSynapse()
-nn.addRandomNeuron()
-nn.addRandomNeuron()
-// nn.addRandomNeuron()
-// nn.addRandomNeuron()
+const neuralNetwork = new NeuralNetwork(6, 2)
+neuralNetwork.addRandomSynapse()
+// neuralNetwork.addRandomNeuron()
 
 document.addEventListener('DOMContentLoaded', () =>
 {
@@ -45,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () =>
 		
 		formicary.update()
 		
-		neuralNetworkRenderer.render(nn)
+		neuralNetworkRenderer.render(neuralNetwork)
 		formicaryRenderer.render(formicary)
 		
 		context.drawImage(neuralNetworkRenderer.canvas, 10, 10)

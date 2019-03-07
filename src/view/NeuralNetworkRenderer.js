@@ -5,7 +5,9 @@ export default class NeuralNetworkRenderer extends CanvasRenderer
 {
 	constructor()
 	{
-		super(500, 100)
+		super(400, 100)
+		
+		this.seedOffset = Math.random() * 1000
 	}
 
 	/**
@@ -15,27 +17,26 @@ export default class NeuralNetworkRenderer extends CanvasRenderer
 	{
 		this.cache = {}
 		this.clear()
+		
+		const vSpacing = this.height / Math.max(network.inputSize, network.outputSize)
 
 		for (let i = 0; i < network.inputSize; i++)
 		{
 			const input = network.neurons[i]
-
-			this.drawNode(0, 15 * i - (15 * network.inputSize - 100) / 2, input.id)
+			this.drawNode(0, vSpacing * i - (vSpacing * network.inputSize - this.height) / 2, input.id)
 		}
 
 		for (let i = 0; i < network.outputSize; i++)
 		{
 			const output = network.neurons[i + network.inputSize]
-
-			this.drawNode(485, 15 * i - (15 * network.outputSize - 100) / 2, output.id)
+			this.drawNode(this.width - 15, vSpacing * i - (vSpacing * network.outputSize - this.height) / 2, output.id)
 		}
 
 		const hiddenCount = network.neurons.length - network.inputSize - network.outputSize
 		for (let i = 0; i < hiddenCount; i++)
 		{
 			const hidden = network.neurons[i + network.inputSize + network.outputSize]
-
-			this.drawNode(this.random(hidden.id, 285) + 100, this.random(hidden.id + network.neurons.length, 70) + 15, hidden.id)
+			this.drawNode(this.random(hidden.id, this.width / 2) + this.width / 4, this.random(hidden.id + network.neurons.length, 70) + 15, hidden.id)
 		}
 
 		for (const synapse of network.synapses)
@@ -92,13 +93,12 @@ export default class NeuralNetworkRenderer extends CanvasRenderer
 			1.5, 0, Math.PI * 2
 		)
 
-		this.context.lineWidth = synapse.weight * 1 + 0.5
+		this.context.lineWidth = Math.abs(synapse.weight * 0.9) + 0.1
 		this.context.strokeStyle = synapse.weight > 0 ? 'blue' : 'red'
 		this.context.stroke()
 		this.context.closePath()
 	}
 
-	seedOffset = Math.random() * 1000
 	random(seed, scale)
 	{
 		const x = Math.sin(seed + this.seedOffset) * 10000
