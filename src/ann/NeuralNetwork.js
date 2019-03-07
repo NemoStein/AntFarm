@@ -52,7 +52,7 @@ export default class NeuralNetwork
 		return output
 	}
 
-	addRandomNeuron()
+	addNeuron()
 	{
 		// Getting (and disabling) a random, expressed, connection
 		let synapse
@@ -74,7 +74,7 @@ export default class NeuralNetwork
 		currentInnovation++
 	}
 
-	addRandomSynapse()
+	addSynapse()
 	{
 		let reroll
 		let input
@@ -104,9 +104,25 @@ export default class NeuralNetwork
 		}
 		while (reroll)
 
-
 		const weight = Math.random() * 2 - 1
 		this.synapses.push(new Synapse(input, output, weight, currentInnovation++))
+	}
+
+	clone()
+	{
+		const neuralNetwork = new NeuralNetwork(this.inputSize, this.outputSize)
+
+		for (const neuron of this.neurons)
+		{
+			neuralNetwork.neurons.push(neuron.clone())
+		}
+		
+		for (const synapse of this.synapses)
+		{
+			neuralNetwork.synapses.push(synapse.clone())
+		}
+
+		return neuralNetwork
 	}
 
 	static crossover(parent1, parent2)
@@ -129,6 +145,11 @@ class Neuron
 	{
 		this.id = id
 		this.layer = layer
+	}
+
+	clone()
+	{
+		return new Neuron(this.id, this.layer)
 	}
 }
 
