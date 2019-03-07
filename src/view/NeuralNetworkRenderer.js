@@ -1,5 +1,5 @@
 import CanvasRenderer from './CanvasRenderer.js'
-import NeuralNetwork from '../ann/NeuralNetwork.js'
+import NeuralNetwork, {Synapse} from '../ann/NeuralNetwork.js'
 
 export default class NeuralNetworkRenderer extends CanvasRenderer
 {
@@ -64,10 +64,13 @@ export default class NeuralNetworkRenderer extends CanvasRenderer
 		}
 	}
 
+	/**
+	 * @param {Synapse} synapse 
+	 */
 	drawConnection(synapse)
 	{
-		const input = this.cache[synapse.input.id]
-		const output = this.cache[synapse.output.id]
+		const input = this.cache[synapse.input]
+		const output = this.cache[synapse.output]
 
 		const distanceX = output.x - input.x
 		const distanceY = output.y - input.y

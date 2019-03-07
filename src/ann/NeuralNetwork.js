@@ -68,8 +68,8 @@ export default class NeuralNetwork
 		// const neuron = new Neuron(Neuron.HIDDEN)
 		const neuron = new Neuron(this.neurons.length, Neuron.HIDDEN)
 		this.neurons.push(neuron)
-		this.synapses.push(new Synapse(synapse.input, neuron, 1, currentInnovation))
-		this.synapses.push(new Synapse(neuron, synapse.output, synapse.weight, currentInnovation))
+		this.synapses.push(new Synapse(synapse.input, neuron.id, 1, currentInnovation))
+		this.synapses.push(new Synapse(neuron.id, synapse.output, synapse.weight, currentInnovation))
 
 		currentInnovation++
 	}
@@ -95,7 +95,7 @@ export default class NeuralNetwork
 
 			for (const synapse of this.synapses)
 			{
-				if (synapse.input === input && synapse.output === output)
+				if (synapse.input === input.id && synapse.output === output.id)
 				{
 					reroll = true
 					continue
@@ -105,7 +105,7 @@ export default class NeuralNetwork
 		while (reroll)
 
 		const weight = Math.random() * 2 - 1
-		this.synapses.push(new Synapse(input, output, weight, currentInnovation++))
+		this.synapses.push(new Synapse(input.id, output.id, weight, currentInnovation++))
 	}
 
 	clone()
@@ -131,7 +131,7 @@ export default class NeuralNetwork
 	}
 }
 
-class Neuron
+export class Neuron
 {
 	static INPUT = 0
 	static HIDDEN = 1
@@ -153,11 +153,11 @@ class Neuron
 	}
 }
 
-class Synapse
+export class Synapse
 {
 	/**
-	 * @param {Neuron} input 
-	 * @param {Neuron} output 
+	 * @param {Number} input 
+	 * @param {Number} output 
 	 * @param {Number} weight 
 	 * @param {Number} innovation 
 	 */
