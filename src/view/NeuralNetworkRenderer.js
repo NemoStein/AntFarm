@@ -6,7 +6,7 @@ export default class NeuralNetworkRenderer extends CanvasRenderer
 	constructor()
 	{
 		super(400, 100)
-		
+
 		this.seedOffset = Math.random() * 1000
 	}
 
@@ -17,7 +17,7 @@ export default class NeuralNetworkRenderer extends CanvasRenderer
 	{
 		this.cache = {}
 		this.clear()
-		
+
 		const vSpacing = this.height / Math.max(network.inputSize, network.outputSize)
 
 		for (let i = 0; i < network.inputSize; i++)

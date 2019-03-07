@@ -18,7 +18,7 @@ export default class FormicaryRenderer extends CanvasRenderer
 	render(formicary)
 	{
 		this.clear()
-		
+
 		this.context.strokeStyle = 'black'
 		this.context.strokeRect(0, 0, formicary.width, formicary.height)
 
@@ -33,10 +33,12 @@ export default class FormicaryRenderer extends CanvasRenderer
 			this.context.fillRect(x - 1, y - 1, 2, 2)
 		}
 
+		let i = 0
 		this.context.fillStyle = 'brown'
 		for (const { x, y } of formicary.food)
 		{
 			this.context.fillRect(x - 1, y - 1, 2, 2)
+			i++
 		}
 
 		for (const ant of formicary.population.ants)
@@ -46,6 +48,12 @@ export default class FormicaryRenderer extends CanvasRenderer
 			this.context.fillRect(ant.x - 2, ant.y - 2, 4, 4)
 			this.context.fillRect(ant.antennae.left.x - 1, ant.antennae.left.y - 1, 2, 2)
 			this.context.fillRect(ant.antennae.right.x - 1, ant.antennae.right.y - 1, 2, 2)
+
+			if (ant.cargo)
+			{
+				this.context.fillStyle = 'white'
+				this.context.fillRect(ant.x - 1, ant.y - 1, 2, 2)
+			}
 		}
 	}
 }

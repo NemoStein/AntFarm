@@ -20,6 +20,9 @@ export default class Ant
 		this.travel = 0
 		this.travelThreshold = 1 ** 2
 
+		this.pickDropCooldown = 0
+		this.pickDropTime = 25
+
 		this.antennae = {
 			left: { x: 0, y: 0 },
 			right: { x: 0, y: 0 },
@@ -56,16 +59,22 @@ export default class Ant
 
 		const [hold, direction] = this.brain.update(leftFoodScent, rightFoodScent, leftPheromoneScent, rightPheromoneScent, anthillDirection, carrying)
 
-		if (this.cargo && !hold)
+		if (this.pickDropCooldown-- <= 0)
 		{
-			this.formicary.dropFoodAt(this.x, this.y, this.cargo)
-		}
-		else if (!this.cargo && hold)
-		{
-			const food = this.formicary.pickFoodAt(this.x, this.y)
-			if (food)
+			if (this.cargo && hold <= 0)
 			{
-				this.cargo = food
+				this.formicary.dropFoodAt(this.x, this.y, this.cargo)
+				this.cargo = null
+				this.pickDropCooldown = this.pickDropTime
+			}
+			else if (!this.cargo && hold > 0)
+			{
+				const food = this.formicary.pickFoodAt(this.x, this.y)
+				if (food)
+				{
+					this.cargo = food
+					this.pickDropCooldown = this.pickDropTime
+				}
 			}
 		}
 
@@ -103,7 +112,7 @@ export default class Ant
 		this.antennae.right.x = this.x + Math.cos(right) * antennaeLength
 		this.antennae.right.y = this.y + Math.sin(right) * antennaeLength
 	}
-	
+
 	die()
 	{
 		this.dead = true

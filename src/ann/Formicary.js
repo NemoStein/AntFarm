@@ -23,6 +23,8 @@ export default class Formicary
 			radius: anthillRadius,
 		}
 
+		this.pickupRange = 2.5
+
 		/** @type {Food[]} */
 		this.food = []
 
@@ -104,7 +106,7 @@ export default class Formicary
 		for (let i = 0; i < this.food.length; i++)
 		{
 			const food = this.food[i];
-			if (food.x === x && food.y === y)
+			if (Math.abs(food.x - x) ** 2 + Math.abs(food.y - y) ** 2 < this.pickupRange ** 2)
 			{
 				this.food.splice(i, 1)
 				return food.scent
@@ -121,6 +123,6 @@ export default class Formicary
 
 	endCurrentGeneration()
 	{
-		
+
 	}
 }
