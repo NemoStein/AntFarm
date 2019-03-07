@@ -3,19 +3,29 @@ let currentInnovation = 0
 export default class NeuralNetwork
 {
 	/**
-	 * @param {number} inputNodeCount
-	 * @param {number} outputNodeCount
+	 * @param {number} inputSize
+	 * @param {number} outputSize
 	 */
-	constructor(inputNodeCount, outputNodeCount)
+	constructor(inputSize, outputSize)
 	{
-		this.inputSize = inputNodeCount
-		this.outputSize = outputNodeCount
+		this.inputSize = inputSize
+		this.outputSize = outputSize
 
 		/** @type {Neuron[]} */
 		this.neurons = []
 
 		/** @type {Synapse[]} */
 		this.synapses = []
+
+		for (let i = 0; i < inputSize; i++)
+		{
+			this.neurons.push(new Neuron(this.neurons.length, Neuron.INPUT))
+		}
+
+		for (let i = 0; i < outputSize; i++)
+		{
+			this.neurons.push(new Neuron(this.neurons.length, Neuron.OUTPUT))
+		}
 	}
 
 	/**
@@ -44,48 +54,73 @@ export default class NeuralNetwork
 
 	addRandomNeuron()
 	{
-		// Getting (and disabling) a random connection
-		const synapse = this.synapses[Math.floor(Math.random() * this.synapses.length)]
+		// Getting (and disabling) a random, expressed, connection
+		let synapse
+
+		do {
+			synapse = this.synapses[Math.floor(Math.random() * this.synapses.length)]
+		}
+		while (!synapse.expressed)
+
 		synapse.expressed = false
 
 		// Creating a new Node and 2 new connections to replace the old connection
 		// const neuron = new Neuron(Neuron.HIDDEN)
-		const neuron = new Neuron()
+		const neuron = new Neuron(this.neurons.length, Neuron.HIDDEN)
 		this.neurons.push(neuron)
 		this.synapses.push(new Synapse(synapse.input, neuron, 1, currentInnovation))
 		this.synapses.push(new Synapse(neuron, synapse.output, synapse.weight, currentInnovation))
-		
+
 		currentInnovation++
 	}
 
 	addRandomSynapse()
 	{
-		const input = this.neurons[Math.floor(Math.random() * (this.neurons.length - this.outputSize))]
-		const output = this.neurons[Math.floor(Math.random() * (this.neurons.length - this.inputSize) + this.inputSize)]
-		const weight = Math.random() * 2 - 1
+		let reroll
+		let input
+		let output
+		
+		// This will get stuck in a infinite loop in case of all input, hidden and output is already connected
+		do {
+			input = this.neurons[Math.floor(Math.random() * (this.neurons.length - this.outputSize))]
+			output = this.neurons[Math.floor(Math.random() * (this.neurons.length - this.inputSize) + this.inputSize)]
+			
+			reroll = false
+			for (const synapse of this.synapses)
+			{
+				if (synapse.input === input && synapse.output === output)
+				{
+					reroll = true
+				}
+			}
+		}
+		while (reroll)
 
+		const weight = Math.random() * 2 - 1
 		this.synapses.push(new Synapse(input, output, weight, currentInnovation++))
 	}
-	
+
 	static crossover(parent1, parent2)
 	{
-		
+
 	}
 }
 
 class Neuron
 {
-	// static INPUT = -1
-	// static HIDDEN = 0
-	// static OUTPUT = 1
+	static INPUT = 0
+	static HIDDEN = 1
+	static OUTPUT = 2
 
-	// /**
-	//  * @param {Number} layer
-	//  */
-	// constructor(layer)
-	// {
-	// 	this.layer = layer
-	// }
+	/**
+	 * @param {Number} id
+	 * @param {Number} layer
+	 */
+	constructor(id, layer)
+	{
+		this.id = id
+		this.layer = layer
+	}
 }
 
 class Synapse
@@ -104,7 +139,7 @@ class Synapse
 		this.expressed = true
 		this.innovation = innovation
 	}
-	
+
 	clone()
 	{
 		return new Synapse(this.input, this.output, this.weight, this.innovation)

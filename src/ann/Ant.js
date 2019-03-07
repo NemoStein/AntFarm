@@ -70,7 +70,7 @@ export default class Ant
 		}
 
 		// This is VERY likely to cause problems!!!
-		this.direction = direction * Math.PI
+		this.direction += direction
 
 		const travelX = Math.cos(this.direction) * this.speed
 		const travelY = Math.sin(this.direction) * this.speed

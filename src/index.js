@@ -1,6 +1,22 @@
 import Formicary from './ann/Formicary.js';
 import FormicaryRenderer from './view/FormicaryRenderer.js'
 import NeuralNetworkRenderer from './view/NeuralNetworkRenderer.js'
+import NeuralNetwork from './ann/NeuralNetwork.js'
+
+const nn = new NeuralNetwork(6, 2)
+nn.addRandomSynapse()
+nn.addRandomSynapse()
+nn.addRandomSynapse()
+// nn.addRandomSynapse()
+// nn.addRandomSynapse()
+// nn.addRandomSynapse()
+// nn.addRandomSynapse()
+// nn.addRandomSynapse()
+// nn.addRandomSynapse()
+nn.addRandomNeuron()
+nn.addRandomNeuron()
+// nn.addRandomNeuron()
+// nn.addRandomNeuron()
 
 document.addEventListener('DOMContentLoaded', () =>
 {
@@ -9,8 +25,8 @@ document.addEventListener('DOMContentLoaded', () =>
 	const canvas = /** @type {HTMLCanvasElement} */ (document.getElementById('Canvas'))
 	const context = canvas.getContext('2d')
 	
-	const formicaryRenderer = new FormicaryRenderer(context, formicary)
-	const neuralNetworkRenderer = new NeuralNetworkRenderer(context, null)
+	const neuralNetworkRenderer = new NeuralNetworkRenderer()
+	const formicaryRenderer = new FormicaryRenderer(formicary.width, formicary.height)
 
 	const fixCanvasSize = () =>
 	{
@@ -28,8 +44,12 @@ document.addEventListener('DOMContentLoaded', () =>
 		context.clearRect(0, 0, width, height)
 		
 		formicary.update()
-		formicaryRenderer.update()
-		neuralNetworkRenderer.update()
+		
+		neuralNetworkRenderer.render(nn)
+		formicaryRenderer.render(formicary)
+		
+		context.drawImage(neuralNetworkRenderer.canvas, 10, 10)
+		context.drawImage(formicaryRenderer.canvas, 10, 120)
 	}
 
 	window.addEventListener('resize', fixCanvasSize)
