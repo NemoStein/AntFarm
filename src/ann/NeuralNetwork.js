@@ -116,7 +116,7 @@ export default class NeuralNetwork
 		{
 			neuralNetwork.neurons.push(neuron.clone())
 		}
-		
+
 		for (const synapse of this.synapses)
 		{
 			neuralNetwork.synapses.push(synapse.clone())

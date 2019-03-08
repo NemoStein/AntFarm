@@ -5,7 +5,6 @@ import NeuralNetwork from './ann/NeuralNetwork.js'
 
 const neuralNetwork = new NeuralNetwork(6, 2)
 neuralNetwork.addSynapse()
-// neuralNetwork.addNeuron()
 
 document.addEventListener('DOMContentLoaded', () =>
 {
