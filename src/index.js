@@ -3,9 +3,6 @@ import FormicaryRenderer from './view/FormicaryRenderer.js'
 import NeuralNetworkRenderer from './view/NeuralNetworkRenderer.js'
 import NeuralNetwork from './ann/NeuralNetwork.js'
 
-const neuralNetwork = new NeuralNetwork(6, 2)
-neuralNetwork.addSynapse()
-
 document.addEventListener('DOMContentLoaded', () =>
 {
 	const formicary = buildFormicary()

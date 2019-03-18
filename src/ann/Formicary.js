@@ -16,6 +16,7 @@ export default class Formicary
 	{
 		this.width = width
 		this.height = height
+		this.population = population
 
 		this.anthill = {
 			x: anthillX,
