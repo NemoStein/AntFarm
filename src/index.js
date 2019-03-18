@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () =>
 
 		formicary.update()
 
-		neuralNetworkRenderer.render(neuralNetwork)
+		neuralNetworkRenderer.render(formicary.getFittest().brain)
 		formicaryRenderer.render(formicary)
 
 		context.drawImage(neuralNetworkRenderer.canvas, 10, 10)

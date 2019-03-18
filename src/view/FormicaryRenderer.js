@@ -41,7 +41,7 @@ export default class FormicaryRenderer extends CanvasRenderer
 			i++
 		}
 
-		for (const ant of formicary.population.ants)
+		for (const ant of formicary.ants)
 		{
 			//'#c33', '#cc3', '#3c3', '#3cc', '#33c', '#c3c'
 			this.context.fillStyle = ant.dead ? 'silver' : 'dimgray'

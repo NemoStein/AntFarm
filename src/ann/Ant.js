@@ -42,6 +42,7 @@ export default class Ant
 		 * - Direction
 		 */
 		this.brain = new NeuralNetwork(6, 2)
+		this.brain.addSynapse()
 
 		this.updateAntenna()
 	}

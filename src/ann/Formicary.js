@@ -1,6 +1,6 @@
 import Food from './Food.js'
 import Pheromone from './Pheromone.js'
-import Population from './Population.js'
+import Ant from './Ant.js'
 
 export default class Formicary
 {
@@ -10,9 +10,9 @@ export default class Formicary
 	 * @param {Number} anthillX X position of the anthill
 	 * @param {Number} anthillY Y position of the anthill
 	 * @param {Number} anthillRadius Radius of the anthill
-	 * @param {Number} populationSize Size of the population
+	 * @param {Number} population Size of the population
 	 */
-	constructor(width, height, anthillX, anthillY, anthillRadius, populationSize)
+	constructor(width, height, anthillX, anthillY, anthillRadius, population)
 	{
 		this.width = width
 		this.height = height
@@ -31,8 +31,19 @@ export default class Formicary
 		/** @type {Pheromone[]} */
 		this.pheromone = []
 
-		/** @type {Population} */
-		this.population = new Population(populationSize, this)
+		/** @type {Ant[]} */
+		this.ants = []
+
+		while (population-- > 0)
+		{
+			const ant = new Ant(this)
+
+			ant.x = this.anthill.x
+			ant.y = this.anthill.y
+			ant.update()
+
+			this.ants.push(ant)
+		}
 	}
 
 	/**
@@ -118,11 +129,32 @@ export default class Formicary
 
 	update()
 	{
-		this.population.update()
+		let allDead = true
+		for (const ant of this.ants)
+		{
+			if (!ant.dead)
+			{
+				allDead = false
+				ant.update()
+			}
+		}
+
+		if (allDead)
+		{
+			this.endCurrentGeneration()
+		}
 	}
 
 	endCurrentGeneration()
 	{
+		
+	}
 
+	/**
+	 * @returns {Ant}
+	 */
+	getFittest()
+	{
+		return this.ants[0]
 	}
 }
