@@ -1,7 +1,6 @@
-import Formicary from './ann/Formicary.js';
+import Formicary from './ann/Formicary.js'
 import FormicaryRenderer from './view/FormicaryRenderer.js'
 import NeuralNetworkRenderer from './view/NeuralNetworkRenderer.js'
-import NeuralNetwork from './ann/NeuralNetwork.js'
 
 document.addEventListener('DOMContentLoaded', () =>
 {
