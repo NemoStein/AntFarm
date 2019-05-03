@@ -65,7 +65,6 @@ export default class NeuralNetwork
 		synapse.expressed = false
 
 		// Creating a new Node and 2 new connections to replace the old connection
-		// const neuron = new Neuron(Neuron.HIDDEN)
 		const neuron = new Neuron(this.neurons.length, Neuron.HIDDEN)
 		this.neurons.push(neuron)
 		this.synapses.push(new Synapse(synapse.input, neuron.id, 1, currentInnovation))
@@ -76,33 +75,39 @@ export default class NeuralNetwork
 
 	addSynapse()
 	{
-		let reroll
 		let input
 		let output
 
-		// This will get stuck in a infinite loop in case of all input, hidden and output is already connected
-		do {
-			input = this.neurons[Math.floor(Math.random() * (this.neurons.length - this.outputSize))]
-			output = this.neurons[Math.floor(Math.random() * (this.neurons.length - this.inputSize) + this.inputSize)]
-
-			reroll = false
-
-			if (output.layer <= input.layer)
+		// This will get stuck in a infinite loop in case of all input, hidden and output neurons are already connected
+		pair: do {
+			let inputIndex = Math.floor(Math.random() * (this.neurons.length - this.outputSize))
+			let outputIndex = Math.floor(Math.random() * (this.neurons.length - this.inputSize) + this.inputSize)
+			
+			// Skipping output layer 
+			if (inputIndex > this.inputSize)
 			{
-				reroll = true
+				inputIndex += this.outputSize
+			}
+			
+			input = this.neurons[inputIndex]
+			output = this.neurons[outputIndex]
+			
+			if (input.layer > output.layer || input.id === output.id)
+			{
 				continue
 			}
 
 			for (const synapse of this.synapses)
 			{
-				if (synapse.input === input.id && synapse.output === output.id)
+				if (synapse.input === input.id && synapse.output === output.id || synapse.input === output.id && synapse.output === input.id)
 				{
-					reroll = true
-					continue
+					continue pair
 				}
 			}
+			
+			break
 		}
-		while (reroll)
+		while (true)
 
 		const weight = Math.random() * 2 - 1
 		this.synapses.push(new Synapse(input.id, output.id, weight, currentInnovation++))
