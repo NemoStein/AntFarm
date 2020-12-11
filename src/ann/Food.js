@@ -1,4 +1,4 @@
-export default class Food {
+export class Food {
   /**
    * @param {Number} x
    * @param {Number} y

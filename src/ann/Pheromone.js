@@ -1,4 +1,4 @@
-export default class Pheromone {
+export class Pheromone {
   /**
    * @param {Number} x
    * @param {Number} y

@@ -1,6 +1,6 @@
-import Formicary from './ann/Formicary.js'
-import FormicaryRenderer from './view/FormicaryRenderer.js'
-import NeuralNetworkRenderer from './view/NeuralNetworkRenderer.js'
+import { Formicary } from './ann/Formicary.js'
+import { FormicaryRenderer } from './view/FormicaryRenderer.js'
+import { NeuralNetworkRenderer } from './view/NeuralNetworkRenderer.js'
 
 document.addEventListener('DOMContentLoaded', () => {
   const formicary = buildFormicary()

@@ -1,8 +1,8 @@
-import Food from './Food.js'
-import Pheromone from './Pheromone.js'
-import Ant from './Ant.js'
+import { Ant } from './Ant.js'
+import { Food } from './Food.js'
+import { Pheromone } from './Pheromone.js'
 
-export default class Formicary {
+export class Formicary {
   /**
    * @param {Number} width Width of the formicary
    * @param {Number} height Height of the formicary

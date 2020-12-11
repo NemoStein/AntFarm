@@ -1,6 +1,8 @@
-import CanvasRenderer from './CanvasRenderer.js'
+import { CanvasRenderer } from './CanvasRenderer.js'
 
-export default class FormicaryRenderer extends CanvasRenderer {
+/** @typedef {import('../ann/Formicary.js').Formicary} Formicary */
+
+export class FormicaryRenderer extends CanvasRenderer {
   /**
    * @param {Formicary} formicary
    */

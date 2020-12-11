@@ -1,6 +1,9 @@
-import CanvasRenderer from './CanvasRenderer.js'
+import { CanvasRenderer } from './CanvasRenderer.js'
 
-export default class NeuralNetworkRenderer extends CanvasRenderer {
+/** @typedef {import('../ann/NeuralNetwork.js').NeuralNetwork} NeuralNetwork */
+/** @typedef {import('../ann/NeuralNetwork.js').Synapse} Synapse */
+
+export class NeuralNetworkRenderer extends CanvasRenderer {
   constructor () {
     super(400, 100)
 

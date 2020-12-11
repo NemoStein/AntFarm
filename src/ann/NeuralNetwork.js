@@ -1,6 +1,6 @@
 let currentInnovation = 0
 
-export default class NeuralNetwork {
+export class NeuralNetwork {
   /**
    * @param {number} inputSize
    * @param {number} outputSize
@@ -73,7 +73,7 @@ export default class NeuralNetwork {
     // This will get stuck in a infinite loop in case of all input, hidden and output neurons are already connected
     do {
       let inputIndex = Math.floor(Math.random() * (this.neurons.length - this.outputSize))
-      let outputIndex = Math.floor(Math.random() * (this.neurons.length - this.inputSize) + this.inputSize)
+      const outputIndex = Math.floor(Math.random() * (this.neurons.length - this.inputSize) + this.inputSize)
 
       // Skipping output layer
       if (inputIndex > this.inputSize) {
@@ -121,10 +121,6 @@ export default class NeuralNetwork {
 }
 
 export class Neuron {
-  static INPUT = 0
-  static HIDDEN = 1
-  static OUTPUT = 2
-
   /**
    * @param {Number} id
    * @param {Number} layer
@@ -138,6 +134,10 @@ export class Neuron {
     return new Neuron(this.id, this.layer)
   }
 }
+
+Neuron.INPUT = 0
+Neuron.HIDDEN = 1
+Neuron.OUTPUT = 2
 
 export class Synapse {
   /**

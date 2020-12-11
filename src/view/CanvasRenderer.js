@@ -1,4 +1,4 @@
-export default class CanvasRenderer {
+export class CanvasRenderer {
   /**
    * @param {Number} width
    * @param {Number} height

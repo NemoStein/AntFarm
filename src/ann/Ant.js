@@ -1,6 +1,8 @@
-import NeuralNetwork from './NeuralNetwork.js'
+import { NeuralNetwork } from './NeuralNetwork.js'
 
-export default class Ant {
+/** @typedef {import('./Formicary.js').Formicary} Formicary */
+
+export class Ant {
   /**
    * @param {Formicary} formicary
    */
@@ -70,8 +72,7 @@ export default class Ant {
       }
     }
 
-    // This is VERY likely to cause problems!!!
-    this.direction += direction
+    this.direction = direction
 
     const travelX = Math.cos(this.direction) * this.speed
     const travelY = Math.sin(this.direction) * this.speed
