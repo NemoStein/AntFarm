@@ -88,11 +88,11 @@ export class Ant {
     `)
 
     if (this.pickDropCooldown-- <= 0) {
-      if (this.cargo && hold <= 0) {
+      if (this.cargo && hold < 0) {
         this.formicary.dropFoodAt(this.x, this.y, this.cargo)
         this.cargo = null
         this.pickDropCooldown = this.pickDropTime
-      } else if (!this.cargo && hold > 0) {
+      } else if (!this.cargo && hold >= 0) {
         const food = this.formicary.pickFoodAt(this.x, this.y)
         if (food) {
           this.cargo = food
