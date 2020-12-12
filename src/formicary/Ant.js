@@ -53,11 +53,11 @@ export class Ant {
     //   }
     // }
 
-    for (const synapse of this.brain.synapses) {
-      if (synapse.expressed) {
-        console.log(`${synapse.input} -> ${synapse.output} (${synapse.innovation})`)
-      }
-    }
+    // for (const synapse of this.brain.synapses) {
+    //   if (synapse.expressed) {
+    //     console.log(`${synapse.input} -> ${synapse.output} (${synapse.innovation})`)
+    //   }
+    // }
 
     this.updateAntenna()
   }
@@ -74,18 +74,18 @@ export class Ant {
 
     const [hold, move, direction, pheromone] = this.brain.update(leftFoodScent, rightFoodScent, leftTrailScent, rightTrailScent, anthillDirection, carrying)
 
-    console.log(`
-      Input:
-        [0,1]    food: ${leftFoodScent.toFixed(5)}, ${rightFoodScent.toFixed(5)}
-        [2,3]   trail: ${leftTrailScent.toFixed(5)}, ${rightTrailScent.toFixed(5)}
-        [4]   anthill: ${anthillDirection.toFixed(5)},
-        [5]  carrying: ${carrying.toFixed(5)}
-      Output:
-        [6]      hold: ${hold.toFixed(5)}
-        [7]      move: ${move.toFixed(5)}
-        [8] direction: ${direction.toFixed(5)}
-        [9] pheromone: ${pheromone.toFixed(5)}
-    `)
+    // console.log(`
+    //   Input:
+    //     [0,1]    food: ${leftFoodScent.toFixed(5)}, ${rightFoodScent.toFixed(5)}
+    //     [2,3]   trail: ${leftTrailScent.toFixed(5)}, ${rightTrailScent.toFixed(5)}
+    //     [4]   anthill: ${anthillDirection.toFixed(5)},
+    //     [5]  carrying: ${carrying.toFixed(5)}
+    //   Output:
+    //     [6]      hold: ${hold.toFixed(5)}
+    //     [7]      move: ${move.toFixed(5)}
+    //     [8] direction: ${direction.toFixed(5)}
+    //     [9] pheromone: ${pheromone.toFixed(5)}
+    // `)
 
     if (this.pickDropCooldown-- <= 0) {
       if (this.cargo && hold < 0) {
