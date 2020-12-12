@@ -42,7 +42,7 @@ export class Brain {
    */
   update (...inputs) {
     if (inputs.length !== this.inputSize) {
-      // throw new Error('Inputs count must match input neurons count')
+      throw new Error('Inputs count must match input neurons count')
     }
 
     const openList = new List()
