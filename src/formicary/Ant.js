@@ -43,7 +43,7 @@ export class Ant {
      * - Pheromone
      */
     this.brain = new Brain(6, 4)
-    this.brain.addSynapse()
+    this.brain.addSynapseMutation()
 
     // for (let i = 0; i < 3; i++) {
     //   if (Math.random() < 0.75) {

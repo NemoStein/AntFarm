@@ -98,7 +98,21 @@ export class Brain {
     return output
   }
 
-  addNeuron () {
+  /**
+   * @param {Neuron} neuron
+   */
+  addNeuron (neuron) {
+    this.neurons.push(neuron)
+  }
+
+  /**
+   * @param {Synapse} synapse
+   */
+  addSynapse (synapse) {
+    this.synapses.push(synapse)
+  }
+
+  addNeuronMutation () {
     // Disabling a random expressed connection
     let synapse
 
@@ -111,14 +125,14 @@ export class Brain {
 
     // Creating a new Node and 2 new connections to replace the old connection
     const neuron = new Neuron(this.neurons.length, Neuron.HIDDEN)
-    this.neurons.push(neuron)
+    this.addNeuron(neuron)
     this.synapses.push(new Synapse(synapse.input, neuron.id, 1, currentInnovation))
     this.synapses.push(new Synapse(neuron.id, synapse.output, synapse.weight, currentInnovation))
 
     currentInnovation++
   }
 
-  addSynapse () {
+  addSynapseMutation () {
     let loopAttemps = 10
 
     do {
@@ -201,11 +215,9 @@ export class Brain {
         while (node)
 
         if (!loopFound) {
-          this.synapses.push(synapse)
+          this.addSynapse(synapse)
           break
         }
-
-        console.log(`Loop found at ${input.id} -> ${output.id}`)
       }
     }
     while (loopAttemps-- > 0)
