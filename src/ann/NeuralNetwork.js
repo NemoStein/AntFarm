@@ -1,6 +1,8 @@
+import { List } from '../utils/List.js'
+
 let currentInnovation = 0
 
-export class NeuralNetwork {
+export class Brain {
   /**
    * @param {number} inputSize
    * @param {number} outputSize
@@ -28,7 +30,7 @@ export class NeuralNetwork {
    * @param {Number} x
    */
   sigmoid (x) {
-    return 1 / (1 + Math.E ** -x)
+    return (1 / (1 + Math.E ** -x)) * 2 - 1
   }
 
   /**
@@ -36,17 +38,65 @@ export class NeuralNetwork {
    * @returns {Number[]}
    */
   update (...inputs) {
-    const output = []
+    if (inputs.length !== this.inputSize) {
+      // throw new Error('Inputs count must match input neurons count')
+    }
 
+    const openList = new List()
+    for (let i = 0; i < this.inputSize; i++) {
+      openList.add(this.neurons[i].id)
+    }
+
+    for (const activation of openList) {
+      for (const synapse of this.synapses) {
+        if (synapse.expressed && synapse.input === activation) {
+          openList.add(synapse.output)
+        }
+      }
+    }
+
+    let track = openList.tail
+    while (track) {
+      let check = track.prev
+      while (check) {
+        if (check.value === track.value) {
+          check.remove()
+        }
+        check = check.prev
+      }
+      track = track.prev
+    }
+
+    // Setting all input neurons to its values and all other neurons to zero
+    const values = new Array(this.neurons.length)
+    for (let i = 0; i < values.length; i++) {
+      values[i] = (i < inputs.length ? inputs[i] : 0)
+    }
+
+    let geneLink = openList.head
+    while (geneLink) {
+      const id = geneLink.value
+
+      for (const synapse of this.synapses) {
+        if (synapse.output === id) {
+          values[synapse.output] += values[synapse.input] * synapse.weight
+        }
+      }
+
+      values[id] = this.sigmoid(values[id])
+      geneLink = geneLink.next
+    }
+
+    const output = []
     for (let i = 0; i < this.outputSize; i++) {
-      output.push(Math.random() * 2 - 1)
+      output.push(this.sigmoid(values[this.inputSize + i]))
     }
 
     return output
   }
 
   addNeuron () {
-    // Getting (and disabling) a random, expressed, connection
+    // Disabling a random expressed connection
     let synapse
 
     do {
@@ -66,43 +116,100 @@ export class NeuralNetwork {
   }
 
   addSynapse () {
-    let input
-    let output
-    let valid
+    let loopAttemps = 10
 
-    // This will get stuck in a infinite loop in case of all input, hidden and output neurons are already connected
     do {
-      let inputIndex = Math.floor(Math.random() * (this.neurons.length - this.outputSize))
-      const outputIndex = Math.floor(Math.random() * (this.neurons.length - this.inputSize) + this.inputSize)
+      let input
+      let output
+      let validConnection
+      let connectionAttempts = 10
 
-      // Skipping output layer
-      if (inputIndex > this.inputSize) {
-        inputIndex += this.outputSize
-      }
+      // Find unconnected neuron pair
+      do {
+        let inputIndex = Math.floor(Math.random() * (this.neurons.length - this.outputSize))
+        const outputIndex = Math.floor(Math.random() * (this.neurons.length - this.inputSize) + this.inputSize)
 
-      input = this.neurons[inputIndex]
-      output = this.neurons[outputIndex]
+        // Skipping output layer
+        if (inputIndex > this.inputSize) {
+          inputIndex += this.outputSize
+        }
 
-      if (input.layer > output.layer || input.id === output.id) {
-        continue
-      }
+        // Picked same neuron - skip
+        if (inputIndex === outputIndex) {
+          continue
+        }
 
-      valid = true
-      for (const synapse of this.synapses) {
-        if ((synapse.input === input.id && synapse.output === output.id) || (synapse.input === output.id && synapse.output === input.id)) {
-          valid = false
-          break
+        input = this.neurons[inputIndex]
+        output = this.neurons[outputIndex]
+
+        // Swap neurons if input layer is bigger than output layer
+        if (input.layer > output.layer) {
+          const swap = input
+          input = output
+          output = swap
+        }
+
+        // Input neuron can't be from output layer - skip
+        if (input.layer === Neuron.OUTPUT) {
+          continue
+        }
+
+        // Checking if connection between this neurons already exists
+        validConnection = true
+        for (const synapse of this.synapses) {
+          if ((synapse.input === input.id && synapse.output === output.id) || (synapse.input === output.id && synapse.output === input.id)) {
+            validConnection = false
+            break
+          }
         }
       }
-    }
-    while (!valid)
+      while (!validConnection && connectionAttempts--)
 
-    const weight = Math.random() * 2 - 1
-    this.synapses.push(new Synapse(input.id, output.id, weight, currentInnovation++))
+      if (validConnection) {
+        const weight = Math.random() * 2 - 1
+        const synapse = new Synapse(input.id, output.id, weight, currentInnovation++)
+
+        // Check circular reference
+        const checkList = /** @type {List<Synapse>} */ (new List())
+        checkList.add(synapse)
+
+        const lookup = synapse.output
+        let node = checkList.head
+        let loopFound = false
+
+        do {
+          for (const synapse of this.synapses) {
+            if (synapse.output === node.value.input) {
+              if (synapse.input === lookup) {
+                loopFound = true
+                break
+              }
+
+              checkList.add(synapse)
+            }
+          }
+
+          if (loopFound) {
+            break
+          }
+
+          node = node.next
+        }
+        while (node)
+
+        if (!loopFound) {
+          this.synapses.push(synapse)
+          break
+        }
+
+        console.log(`Loop found at ${input.id} -> ${output.id}`)
+      }
+    }
+    while (loopAttemps-- > 0)
   }
 
   clone () {
-    const neuralNetwork = new NeuralNetwork(this.inputSize, this.outputSize)
+    const neuralNetwork = new Brain(this.inputSize, this.outputSize)
 
     for (const neuron of this.neurons) {
       neuralNetwork.neurons.push(neuron.clone())

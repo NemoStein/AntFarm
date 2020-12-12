@@ -1,4 +1,4 @@
-import { NeuralNetwork } from './NeuralNetwork.js'
+import { Brain } from './NeuralNetwork.js'
 
 /** @typedef {import('./Formicary.js').Formicary} Formicary */
 
@@ -16,8 +16,8 @@ export class Ant {
     this.cargo = null
     this.dead = false
 
-    this.travel = 0
-    this.travelThreshold = 1 ** 2
+    this.traveled = 0
+    this.travelThreshold = 0.5
 
     this.pickDropCooldown = 0
     this.pickDropTime = 25
@@ -36,12 +36,28 @@ export class Ant {
      * - Anthill direction
      * - Carrying
      *
-     * Brain output (2)
+     * Brain output (3)
      * - Hold
+     * - Move
      * - Direction
+     * - Pheromone
      */
-    this.brain = new NeuralNetwork(6, 2)
+    this.brain = new Brain(6, 4)
     this.brain.addSynapse()
+
+    // for (let i = 0; i < 3; i++) {
+    //   if (Math.random() < 0.75) {
+    //     this.brain.addSynapse()
+    //   } else {
+    //     this.brain.addNeuron()
+    //   }
+    // }
+
+    for (const synapse of this.brain.synapses) {
+      if (synapse.expressed) {
+        console.log(`${synapse.input} -> ${synapse.output} (${synapse.innovation})`)
+      }
+    }
 
     this.updateAntenna()
   }
@@ -51,12 +67,25 @@ export class Ant {
 
     const leftFoodScent = this.formicary.getFoodScentFrom(this.antennae.left.x, this.antennae.left.y)
     const rightFoodScent = this.formicary.getFoodScentFrom(this.antennae.right.x, this.antennae.right.y)
-    const leftPheromoneScent = this.formicary.getPheromoneScentFrom(this.antennae.left.x, this.antennae.left.y)
-    const rightPheromoneScent = this.formicary.getPheromoneScentFrom(this.antennae.right.x, this.antennae.right.y)
+    const leftTrailScent = this.formicary.getTrailScentFrom(this.antennae.left.x, this.antennae.left.y)
+    const rightTrailScent = this.formicary.getTrailScentFrom(this.antennae.right.x, this.antennae.right.y)
     const anthillDirection = this.formicary.getAnthillDirectionFrom(this.x, this.y)
     const carrying = this.cargo ? 1 : 0
 
-    const [hold, direction] = this.brain.update(leftFoodScent, rightFoodScent, leftPheromoneScent, rightPheromoneScent, anthillDirection, carrying)
+    const [hold, move, direction, pheromone] = this.brain.update(leftFoodScent, rightFoodScent, leftTrailScent, rightTrailScent, anthillDirection, carrying)
+
+    console.log(`
+      Input:
+        [0,1]    food: ${leftFoodScent.toFixed(5)}, ${rightFoodScent.toFixed(5)}
+        [2,3]   trail: ${leftTrailScent.toFixed(5)}, ${rightTrailScent.toFixed(5)}
+        [4]   anthill: ${anthillDirection.toFixed(5)},
+        [5]  carrying: ${carrying.toFixed(5)}
+      Output:
+        [6]      hold: ${hold.toFixed(5)}
+        [7]      move: ${move.toFixed(5)}
+        [8] direction: ${direction.toFixed(5)}
+        [9] pheromone: ${direction.toFixed(5)}
+    `)
 
     if (this.pickDropCooldown-- <= 0) {
       if (this.cargo && hold <= 0) {
@@ -72,21 +101,23 @@ export class Ant {
       }
     }
 
-    this.direction = direction
+    this.direction += direction * Math.PI
 
-    const travelX = Math.cos(this.direction) * this.speed
-    const travelY = Math.sin(this.direction) * this.speed
-    this.travel += travelX ** 2 + travelY ** 2
+    if (move >= 0) {
+      const travelX = Math.cos(this.direction) * this.speed
+      const travelY = Math.sin(this.direction) * this.speed
+      this.traveled += travelX ** 2 + travelY ** 2
 
-    this.x += travelX
-    this.y += travelY
+      this.x += travelX
+      this.y += travelY
 
-    if (this.x <= 0 || this.x >= this.formicary.width || this.y <= 0 || this.y >= this.formicary.height) {
-      this.die()
+      if (this.x <= 0 || this.x >= this.formicary.width || this.y <= 0 || this.y >= this.formicary.height) {
+        this.die()
+      }
     }
 
-    if (this.travel > this.travelThreshold) {
-      this.travel -= this.travelThreshold
+    if (Math.random() < pheromone && this.traveled > this.travelThreshold) {
+      this.traveled -= this.travelThreshold
       this.formicary.dropPheromoneAt(this.x, this.y, 1)
     }
   }

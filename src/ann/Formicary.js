@@ -62,7 +62,7 @@ export class Formicary {
    * @param {Number} x
    * @param {Number} y
    */
-  getPheromoneScentFrom (x, y) {
+  getTrailScentFrom (x, y) {
     let scent = 0
     for (const item of this.pheromone) {
       const squareDistance = Math.abs(item.x - x) ** 2 + Math.abs(item.y - y) ** 2

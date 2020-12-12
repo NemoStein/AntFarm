@@ -1,6 +1,6 @@
 import { CanvasRenderer } from './CanvasRenderer.js'
 
-/** @typedef {import('../ann/NeuralNetwork.js').NeuralNetwork} NeuralNetwork */
+/** @typedef {import('../ann/NeuralNetwork.js').Brain} Brain */
 /** @typedef {import('../ann/NeuralNetwork.js').Synapse} Synapse */
 
 export class NeuralNetworkRenderer extends CanvasRenderer {
@@ -11,31 +11,31 @@ export class NeuralNetworkRenderer extends CanvasRenderer {
   }
 
   /**
-   * @param {NeuralNetwork} network
+   * @param {Brain} brain
    */
-  render (network) {
+  render (brain) {
     this.cache = {}
     this.clear()
 
-    const vSpacing = this.height / Math.max(network.inputSize, network.outputSize)
+    const vSpacing = this.height / Math.max(brain.inputSize, brain.outputSize)
 
-    for (let i = 0; i < network.inputSize; i++) {
-      const input = network.neurons[i]
-      this.drawNode(0, vSpacing * i - (vSpacing * network.inputSize - this.height) / 2, input.id)
+    for (let i = 0; i < brain.inputSize; i++) {
+      const input = brain.neurons[i]
+      this.drawNode(0, vSpacing * i - (vSpacing * brain.inputSize - this.height) / 2, input.id)
     }
 
-    for (let i = 0; i < network.outputSize; i++) {
-      const output = network.neurons[i + network.inputSize]
-      this.drawNode(this.width - 15, vSpacing * i - (vSpacing * network.outputSize - this.height) / 2, output.id)
+    for (let i = 0; i < brain.outputSize; i++) {
+      const output = brain.neurons[i + brain.inputSize]
+      this.drawNode(this.width - 15, vSpacing * i - (vSpacing * brain.outputSize - this.height) / 2, output.id)
     }
 
-    const hiddenCount = network.neurons.length - network.inputSize - network.outputSize
+    const hiddenCount = brain.neurons.length - brain.inputSize - brain.outputSize
     for (let i = 0; i < hiddenCount; i++) {
-      const hidden = network.neurons[i + network.inputSize + network.outputSize]
-      this.drawNode(this.random(hidden.id, this.width / 2) + this.width / 4, this.random(hidden.id + network.neurons.length, 70) + 15, hidden.id)
+      const hidden = brain.neurons[i + brain.inputSize + brain.outputSize]
+      this.drawNode(this.random(hidden.id, this.width * 0.8) + this.width * 0.1, this.random(hidden.id + brain.neurons.length, 70) + 15, hidden.id)
     }
 
-    for (const synapse of network.synapses) {
+    for (const synapse of brain.synapses) {
       if (synapse.expressed) {
         this.drawConnection(synapse)
       }

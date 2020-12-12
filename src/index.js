@@ -51,7 +51,7 @@ const buildFormicary = () => {
 
   const food = 250
   for (let i = 0; i < food; i++) {
-    formicary.dropFoodAt(Math.floor(Math.random() * 500), Math.floor(Math.random() * 500), 5)
+    formicary.dropFoodAt(Math.floor(Math.random() * 500), Math.floor(Math.random() * 500), 75)
   }
 
   return formicary
