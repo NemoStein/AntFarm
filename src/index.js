@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const canvas = /** @type {HTMLCanvasElement} */ (document.getElementById('Canvas'))
   const context = canvas.getContext('2d')
 
-  const neuralNetworkRenderer = new NeuralNetworkRenderer()
+  const neuralNetworkRenderer = new NeuralNetworkRenderer(formicary.width, 150)
   const formicaryRenderer = new FormicaryRenderer(formicary.width, formicary.height)
 
   const fixCanvasSize = () => {
@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
     formicaryRenderer.render(formicary)
 
     context.drawImage(neuralNetworkRenderer.canvas, 10, 10)
-    context.drawImage(formicaryRenderer.canvas, 10, 120)
+    context.drawImage(formicaryRenderer.canvas, 10, neuralNetworkRenderer.height + 20)
   }
 
   window.addEventListener('resize', fixCanvasSize)
@@ -45,9 +45,9 @@ const buildFormicary = () => {
   const anthillX = Math.floor(Math.random() * 400 + 50)
   const anthillY = Math.floor(Math.random() * 400 + 50)
   const anthillRadius = 15
-  const populations = 1
+  const population = 10
 
-  const formicary = new Formicary(width, height, anthillX, anthillY, anthillRadius, populations)
+  const formicary = new Formicary(width, height, anthillX, anthillY, anthillRadius, population)
 
   const food = 250
   for (let i = 0; i < food; i++) {

@@ -4,8 +4,12 @@ import { CanvasRenderer } from './CanvasRenderer.js'
 /** @typedef {import('../neat/Synapse.js').Synapse} Synapse */
 
 export class NeuralNetworkRenderer extends CanvasRenderer {
-  constructor () {
-    super(400, 100)
+  /**
+   * @param {number} width
+   * @param {number} height
+   */
+  constructor (width = 400, height = 100) {
+    super(width, height)
 
     this.seedOffset = Math.random() * 1000
   }
