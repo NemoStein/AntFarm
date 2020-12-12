@@ -11,6 +11,13 @@ export class Neuron {
   clone () {
     return new Neuron(this.id, this.layer)
   }
+
+  serialize () {
+    return {
+      id: this.id,
+      layer: this.layer
+    }
+  }
 }
 
 Neuron.INPUT = 0

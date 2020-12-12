@@ -225,6 +225,15 @@ export class Brain {
     return brain
   }
 
+  serialize () {
+    return {
+      inputSize: this.inputSize,
+      outputSize: this.outputSize,
+      neurons: this.neurons.map(neuron => neuron.serialize()),
+      synapses: this.synapses.map(synapse => synapse.serialize())
+    }
+  }
+
   static crossover (parent1, parent2) {
 
   }

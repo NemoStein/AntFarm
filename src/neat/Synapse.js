@@ -16,4 +16,14 @@ export class Synapse {
   clone () {
     return new Synapse(this.input, this.output, this.weight, this.innovation)
   }
+
+  serialize () {
+    return {
+      input: this.input,
+      output: this.output,
+      weight: this.weight,
+      expressed: this.expressed,
+      innovation: this.innovation
+    }
+  }
 }
