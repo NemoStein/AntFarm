@@ -84,7 +84,7 @@ export class Ant {
         [6]      hold: ${hold.toFixed(5)}
         [7]      move: ${move.toFixed(5)}
         [8] direction: ${direction.toFixed(5)}
-        [9] pheromone: ${direction.toFixed(5)}
+        [9] pheromone: ${pheromone.toFixed(5)}
     `)
 
     if (this.pickDropCooldown-- <= 0) {

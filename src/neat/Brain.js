@@ -32,7 +32,8 @@ export class Brain {
    * @param {Number} x
    */
   sigmoid (x) {
-    return (1 / (1 + Math.E ** -x)) * 2 - 1
+    // 1.618 ~= Phi, Golden Ration
+    return (1 / (1 + 1.618 ** -x)) * 2 - 1
   }
 
   /**
