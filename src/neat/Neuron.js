@@ -18,6 +18,10 @@ export class Neuron {
       layer: this.layer
     }
   }
+
+  static deserialize (data) {
+    return new Neuron(data.id, data.layer)
+  }
 }
 
 Neuron.INPUT = 0

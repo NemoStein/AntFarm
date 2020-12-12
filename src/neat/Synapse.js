@@ -26,4 +26,11 @@ export class Synapse {
       innovation: this.innovation
     }
   }
+
+  static deserialize (data) {
+    const synapse = new Synapse(data.input, data.output, data.weight, data.innovation)
+    synapse.expressed = data.expressed
+
+    return synapse
+  }
 }

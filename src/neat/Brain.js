@@ -239,10 +239,27 @@ export class Brain {
 
   serialize () {
     return {
+      innovation: currentInnovation,
       inputSize: this.inputSize,
       outputSize: this.outputSize,
       neurons: this.neurons.map(neuron => neuron.serialize()),
       synapses: this.synapses.map(synapse => synapse.serialize())
+    }
+  }
+
+  static deserialize (data) {
+    const brain = new Brain(data.inputSize, data.outputSize)
+
+    for (const neuron of data.neurons) {
+      brain.addNeuron(Neuron.deserialize(neuron))
+    }
+
+    for (const synapse of data.synapses) {
+      brain.addSynapse(Synapse.deserialize(synapse))
+    }
+
+    if (currentInnovation < data.innovation) {
+      currentInnovation = data.innovation
     }
   }
 
