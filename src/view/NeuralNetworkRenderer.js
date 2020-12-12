@@ -1,7 +1,7 @@
 import { CanvasRenderer } from './CanvasRenderer.js'
 
-/** @typedef {import('../ann/NeuralNetwork.js').Brain} Brain */
-/** @typedef {import('../ann/NeuralNetwork.js').Synapse} Synapse */
+/** @typedef {import('../neat/Brain.js').Brain} Brain */
+/** @typedef {import('../neat/Synapse.js').Synapse} Synapse */
 
 export class NeuralNetworkRenderer extends CanvasRenderer {
   constructor () {

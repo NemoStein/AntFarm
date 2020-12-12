@@ -1,4 +1,6 @@
 import { List } from '../utils/List.js'
+import { Neuron } from './Neuron.js'
+import { Synapse } from './Synapse.js'
 
 let currentInnovation = 0
 
@@ -224,44 +226,5 @@ export class Brain {
 
   static crossover (parent1, parent2) {
 
-  }
-}
-
-export class Neuron {
-  /**
-   * @param {Number} id
-   * @param {Number} layer
-   */
-  constructor (id, layer) {
-    this.id = id
-    this.layer = layer
-  }
-
-  clone () {
-    return new Neuron(this.id, this.layer)
-  }
-}
-
-Neuron.INPUT = 0
-Neuron.HIDDEN = 1
-Neuron.OUTPUT = 2
-
-export class Synapse {
-  /**
-   * @param {Number} input
-   * @param {Number} output
-   * @param {Number} weight
-   * @param {Number} innovation
-   */
-  constructor (input, output, weight, innovation) {
-    this.input = input
-    this.output = output
-    this.weight = weight
-    this.expressed = true
-    this.innovation = innovation
-  }
-
-  clone () {
-    return new Synapse(this.input, this.output, this.weight, this.innovation)
   }
 }

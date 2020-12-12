@@ -1,4 +1,4 @@
-import { Formicary } from './ann/Formicary.js'
+import { Formicary } from './formicary/Formicary.js'
 import { FormicaryRenderer } from './view/FormicaryRenderer.js'
 import { NeuralNetworkRenderer } from './view/NeuralNetworkRenderer.js'
 

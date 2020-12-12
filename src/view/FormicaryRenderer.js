@@ -1,6 +1,6 @@
 import { CanvasRenderer } from './CanvasRenderer.js'
 
-/** @typedef {import('../ann/Formicary.js').Formicary} Formicary */
+/** @typedef {import('../formicary/Formicary.js').Formicary} Formicary */
 
 export class FormicaryRenderer extends CanvasRenderer {
   /**

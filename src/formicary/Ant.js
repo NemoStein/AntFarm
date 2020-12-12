@@ -1,4 +1,4 @@
-import { Brain } from './NeuralNetwork.js'
+import { Brain } from '../neat/Brain.js'
 
 /** @typedef {import('./Formicary.js').Formicary} Formicary */
 
