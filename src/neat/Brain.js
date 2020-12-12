@@ -211,17 +211,17 @@ export class Brain {
   }
 
   clone () {
-    const neuralNetwork = new Brain(this.inputSize, this.outputSize)
+    const brain = new Brain(this.inputSize, this.outputSize)
 
     for (const neuron of this.neurons) {
-      neuralNetwork.neurons.push(neuron.clone())
+      brain.neurons.push(neuron.clone())
     }
 
     for (const synapse of this.synapses) {
-      neuralNetwork.synapses.push(synapse.clone())
+      brain.synapses.push(synapse.clone())
     }
 
-    return neuralNetwork
+    return brain
   }
 
   static crossover (parent1, parent2) {
