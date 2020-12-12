@@ -1,17 +1,27 @@
+/* global Path2D */
+
 import { CanvasRenderer } from './CanvasRenderer.js'
 
 /** @typedef {import('../neat/Brain.js').Brain} Brain */
 /** @typedef {import('../neat/Synapse.js').Synapse} Synapse */
+/** @typedef {import('../utils/Cursor.js').Cursor} Cursor */
 
 export class NeuralNetworkRenderer extends CanvasRenderer {
   /**
    * @param {number} width
    * @param {number} height
    */
-  constructor (width = 400, height = 100) {
-    super(width, height)
+  constructor (x, y, width = 400, height = 100) {
+    super(x, y, width, height)
 
     this.seedOffset = Math.random() * 1000
+    this.buttonHeigth = 20
+    this.serializeButton = {
+      x: 0,
+      y: height - this.buttonHeigth,
+      width: 120,
+      height: this.buttonHeigth
+    }
   }
 
   /**
@@ -21,16 +31,17 @@ export class NeuralNetworkRenderer extends CanvasRenderer {
     this.cache = {}
     this.clear()
 
-    const vSpacing = this.height / Math.max(brain.inputSize, brain.outputSize)
+    const graphHeigth = this.height - this.buttonHeigth
+    const vSpacing = graphHeigth / Math.max(brain.inputSize, brain.outputSize)
 
     for (let i = 0; i < brain.inputSize; i++) {
       const input = brain.neurons[i]
-      this.drawNode(0, vSpacing * i - (vSpacing * brain.inputSize - this.height) / 2, input.id)
+      this.drawNode(0, vSpacing * i - (vSpacing * brain.inputSize - graphHeigth) / 2, input.id)
     }
 
     for (let i = 0; i < brain.outputSize; i++) {
       const output = brain.neurons[i + brain.inputSize]
-      this.drawNode(this.width - 15, vSpacing * i - (vSpacing * brain.outputSize - this.height) / 2, output.id)
+      this.drawNode(this.width - 15, vSpacing * i - (vSpacing * brain.outputSize - graphHeigth) / 2, output.id)
     }
 
     const hiddenCount = brain.neurons.length - brain.inputSize - brain.outputSize
@@ -44,6 +55,8 @@ export class NeuralNetworkRenderer extends CanvasRenderer {
         this.drawConnection(synapse)
       }
     }
+
+    this.drawButtons()
   }
 
   drawNode (x, y, id) {
@@ -97,8 +110,47 @@ export class NeuralNetworkRenderer extends CanvasRenderer {
     this.context.closePath()
   }
 
+  drawButtons () {
+    this.context.fillStyle = '#eeeeee'
+    this.context.strokeStyle = 'gray'
+
+    const { x, y, width, height } = this.serializeButton
+
+    this.context.fillRect(x, y, width, height)
+    this.context.strokeRect(x, y, width, height)
+
+    this.context.font = '9px sans-serif'
+    this.context.textAlign = 'center'
+    this.context.fillStyle = 'gray'
+    this.context.fillText('serialize', width / 2 + x, height / 2 + 3 + y)
+  }
+
   random (seed, scale) {
     const x = Math.sin(seed + this.seedOffset) * 10000
     return (x - Math.floor(x)) * scale
+  }
+
+  /**
+   * @param {Cursor} cursor
+   */
+  update (cursor) {
+    const { x, y, width, height } = this.serializeButton
+    const path = new Path2D()
+    path.rect(x, y, width, height)
+
+    if (this.context.isPointInPath(path, cursor.x - this.x, cursor.y - this.y)) {
+      document.body.style.cursor = 'pointer'
+
+      if (
+        cursor.pressed &&
+        cursor.released &&
+        this.context.isPointInPath(path, cursor.pressed.x - this.x, cursor.pressed.y - this.y) &&
+        this.context.isPointInPath(path, cursor.released.x - this.x, cursor.released.y - this.y)
+      ) {
+        console.log('Click')
+      }
+    } else {
+      document.body.style.cursor = 'auto'
+    }
   }
 }

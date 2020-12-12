@@ -1,15 +1,18 @@
+import { Cursor } from './utils/Cursor.js'
 import { Formicary } from './formicary/Formicary.js'
 import { FormicaryRenderer } from './view/FormicaryRenderer.js'
 import { NeuralNetworkRenderer } from './view/NeuralNetworkRenderer.js'
+import { Point } from './utils/Point.js'
 
 document.addEventListener('DOMContentLoaded', () => {
   const formicary = buildFormicary()
 
   const canvas = /** @type {HTMLCanvasElement} */ (document.getElementById('Canvas'))
   const context = canvas.getContext('2d')
+  const cursor = new Cursor()
 
-  const neuralNetworkRenderer = new NeuralNetworkRenderer(formicary.width, 150)
-  const formicaryRenderer = new FormicaryRenderer(formicary.width, formicary.height)
+  const neuralNetworkRenderer = new NeuralNetworkRenderer(10, 10, formicary.width, 150)
+  const formicaryRenderer = new FormicaryRenderer(10, neuralNetworkRenderer.height + 20, formicary.width, formicary.height)
 
   const fixCanvasSize = () => {
     canvas.width = document.body.clientWidth
@@ -29,11 +32,33 @@ document.addEventListener('DOMContentLoaded', () => {
     neuralNetworkRenderer.render(formicary.getFittest().brain)
     formicaryRenderer.render(formicary)
 
-    context.drawImage(neuralNetworkRenderer.canvas, 10, 10)
-    context.drawImage(formicaryRenderer.canvas, 10, neuralNetworkRenderer.height + 20)
+    neuralNetworkRenderer.update(cursor)
+
+    context.drawImage(neuralNetworkRenderer.canvas, neuralNetworkRenderer.x, neuralNetworkRenderer.y)
+    context.drawImage(formicaryRenderer.canvas, formicaryRenderer.x, formicaryRenderer.y)
+
+    if (cursor.pressed && cursor.released) {
+      cursor.clear()
+    }
+  }
+
+  const setCursorPosition = (/** @type {MouseEvent} */ event) => {
+    cursor.x = event.clientX
+    cursor.y = event.clientY
+  }
+
+  const setCursorPressedPosition = (/** @type {MouseEvent} */ event) => {
+    cursor.pressed = new Point(event.clientX, event.clientY)
+  }
+
+  const setCursorReleasedPosition = (/** @type {MouseEvent} */ event) => {
+    cursor.released = new Point(event.clientX, event.clientY)
   }
 
   window.addEventListener('resize', fixCanvasSize)
+  document.addEventListener('mousemove', setCursorPosition)
+  document.addEventListener('mousedown', setCursorPressedPosition)
+  document.addEventListener('mouseup', setCursorReleasedPosition)
 
   fixCanvasSize()
   gameLoop()

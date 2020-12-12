@@ -3,7 +3,9 @@ export class CanvasRenderer {
    * @param {Number} width
    * @param {Number} height
    */
-  constructor (width, height) {
+  constructor (x, y, width, height) {
+    this.x = x
+    this.y = y
     this.width = width
     this.height = height
 
