@@ -14,6 +14,7 @@ export class NeuralNetworkRenderer extends CanvasRenderer {
   constructor (x, y, width = 400, height = 100) {
     super(x, y, width, height)
 
+    this.brain = null
     this.seedOffset = Math.random() * 1000
     this.buttonHeigth = 20
     this.serializeButton = {
@@ -28,6 +29,7 @@ export class NeuralNetworkRenderer extends CanvasRenderer {
    * @param {Brain} brain
    */
   render (brain) {
+    this.brain = brain
     this.cache = {}
     this.clear()
 
@@ -147,7 +149,7 @@ export class NeuralNetworkRenderer extends CanvasRenderer {
         this.context.isPointInPath(path, cursor.pressed.x - this.x, cursor.pressed.y - this.y) &&
         this.context.isPointInPath(path, cursor.released.x - this.x, cursor.released.y - this.y)
       ) {
-        console.log('Click')
+        console.log(JSON.stringify(this.brain))
       }
     } else {
       document.body.style.cursor = 'auto'
