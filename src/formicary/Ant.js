@@ -12,7 +12,7 @@ export class Ant {
     this.x = 0
     this.y = 0
     this.direction = Math.random() * Math.PI * 2
-    this.speed = 0.15
+    this.speed = 0.25
     this.cargo = null
     this.dead = false
 
