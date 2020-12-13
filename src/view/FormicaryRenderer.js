@@ -1,12 +1,26 @@
-import { CanvasRenderer } from './CanvasRenderer.js'
+/* global Path2D */
+import { CanvasRenderer, Hitzone } from './CanvasRenderer.js'
 
 /** @typedef {import('../formicary/Formicary.js').Formicary} Formicary */
 
 export class FormicaryRenderer extends CanvasRenderer {
+  constructor (x, y, width, height) {
+    super(x, y, width, height)
+
+    const path = new Path2D()
+    path.rect(0, 0, width, height)
+
+    this.findAnt = new Hitzone(path)
+    this.findAnt.action = cursor => (this.selectedAnt = this.findAntNear(cursor.x - this.x, cursor.y - this.y))
+
+    this.hitzones.push(this.findAnt)
+  }
+
   /**
    * @param {Formicary} formicary
    */
   render (formicary) {
+    this.formicary = formicary
     this.clear()
 
     this.context.strokeStyle = 'black'
@@ -34,9 +48,30 @@ export class FormicaryRenderer extends CanvasRenderer {
       this.context.fillRect(ant.antennae.left.x - 1, ant.antennae.left.y - 1, 2, 2)
       this.context.fillRect(ant.antennae.right.x - 1, ant.antennae.right.y - 1, 2, 2)
 
+      if (ant === this.selectedAnt) {
+        this.context.fillStyle = 'rgba(0, 0, 127, 0.1)'
+        this.context.beginPath()
+        this.context.arc(ant.x, ant.y, 8, 0, Math.PI * 2)
+        this.context.fill()
+      }
+
       if (ant.cargo) {
         this.context.fillStyle = 'white'
         this.context.fillRect(ant.x - 1, ant.y - 1, 2, 2)
+      }
+    }
+  }
+
+  findAntNear (x, y) {
+    const radius = 8
+    for (const ant of this.formicary.ants) {
+      if (
+        ant.x - radius <= x &&
+        ant.x + radius >= x &&
+        ant.y - radius <= y &&
+        ant.y + radius >= y
+      ) {
+        return ant
       }
     }
   }

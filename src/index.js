@@ -1,3 +1,4 @@
+import { ControlsRenderer } from './view/ControlsRenderer.js'
 import { Cursor } from './utils/Cursor.js'
 import { Formicary } from './formicary/Formicary.js'
 import { FormicaryRenderer } from './view/FormicaryRenderer.js'
@@ -11,8 +12,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const context = canvas.getContext('2d')
   const cursor = new Cursor()
 
-  const neuralNetworkRenderer = new NeuralNetworkRenderer(10, 10, formicary.width, 150)
-  const formicaryRenderer = new FormicaryRenderer(10, neuralNetworkRenderer.height + 20, formicary.width, formicary.height)
+  const controlsRenderer = new ControlsRenderer(10, 10, formicary.width, 20)
+  const neuralNetworkRenderer = new NeuralNetworkRenderer(10, controlsRenderer.y + controlsRenderer.height + 10, formicary.width, 150)
+  const formicaryRenderer = new FormicaryRenderer(10, neuralNetworkRenderer.y + neuralNetworkRenderer.height + 10, formicary.width, formicary.height)
 
   const fixCanvasSize = () => {
     canvas.width = document.body.clientWidth
@@ -29,11 +31,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     formicary.update()
 
-    neuralNetworkRenderer.render(formicary.getFittest().brain)
     formicaryRenderer.render(formicary)
+    formicaryRenderer.update(cursor)
 
+    let brain = formicary.getFittest().brain
+    if (formicaryRenderer.selectedAnt != null) {
+      brain = formicaryRenderer.selectedAnt.brain
+    }
+    controlsRenderer.brain = brain
+
+    neuralNetworkRenderer.render(brain)
     neuralNetworkRenderer.update(cursor)
 
+    controlsRenderer.render()
+    controlsRenderer.update(cursor)
+
+    context.drawImage(controlsRenderer.canvas, controlsRenderer.x, controlsRenderer.y)
     context.drawImage(neuralNetworkRenderer.canvas, neuralNetworkRenderer.x, neuralNetworkRenderer.y)
     context.drawImage(formicaryRenderer.canvas, formicaryRenderer.x, formicaryRenderer.y)
 
