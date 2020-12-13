@@ -33,8 +33,6 @@ export class CanvasRenderer {
   update (cursor) {
     for (const hitzone of this.hitzones) {
       if (this.context.isPointInPath(hitzone.area, cursor.x - this.x, cursor.y - this.y)) {
-        hitzone.over?.(cursor)
-
         if (
           cursor.pressed &&
           cursor.released &&
@@ -43,8 +41,6 @@ export class CanvasRenderer {
         ) {
           hitzone.action?.(cursor)
         }
-      } else {
-        hitzone.out?.(cursor)
       }
     }
   }
@@ -53,17 +49,10 @@ export class CanvasRenderer {
 export class Hitzone {
   /**
    * @param {Path2D} area
+   * @param {Function} action
    */
-  constructor (area) {
+  constructor (area, action) {
     this.area = area
-
-    /** @type {Function} */
-    this.over = null
-
-    /** @type {Function} */
-    this.out = null
-
-    /** @type {Function} */
-    this.action = null
+    this.action = action
   }
 }

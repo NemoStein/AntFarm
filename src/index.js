@@ -29,8 +29,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     context.clearRect(0, 0, width, height)
 
-    formicary.update()
-
     formicaryRenderer.render(formicary)
     formicaryRenderer.update(cursor)
 
@@ -45,6 +43,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     controlsRenderer.render()
     controlsRenderer.update(cursor)
+
+    for (let i = 0; i < controlsRenderer.speed; i++) {
+      formicary.update()
+    }
 
     context.drawImage(controlsRenderer.canvas, controlsRenderer.x, controlsRenderer.y)
     context.drawImage(neuralNetworkRenderer.canvas, neuralNetworkRenderer.x, neuralNetworkRenderer.y)
