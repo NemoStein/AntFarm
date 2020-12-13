@@ -1,5 +1,7 @@
 export class CanvasRenderer {
   /**
+   * @param {Number} x
+   * @param {Number} y
    * @param {Number} width
    * @param {Number} height
    */
