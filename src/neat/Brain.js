@@ -116,18 +116,21 @@ export class Brain {
   }
 
   addNeuronMutation () {
+    if (this.synapses.length === 0) {
+      return
+    }
+
     // Selecting a random connection
     const synapse = this.synapses[Math.floor(Math.random() * this.synapses.length)]
 
     // Creating a new Node and 2 new connections to replace the old connection
     const neuron = new Neuron(this.neurons.length, Neuron.HIDDEN)
     this.addNeuron(neuron)
-    this.synapses.push(new Synapse(synapse.input, neuron.id, 1, currentInnovation, synapse.expressed))
-    this.synapses.push(new Synapse(neuron.id, synapse.output, synapse.weight, currentInnovation, synapse.expressed))
+    this.synapses.push(new Synapse(synapse.input, neuron.id, 1, currentInnovation++))
+    this.synapses.push(new Synapse(neuron.id, synapse.output, synapse.weight, currentInnovation++, synapse.expressed))
 
     // Disabling selected synapse
     synapse.expressed = false
-    currentInnovation++
   }
 
   addSynapseMutation () {
@@ -136,13 +139,13 @@ export class Brain {
     do {
       let input
       let output
-      let validConnection
+      let validConnection = false
       let connectionAttempts = 10
 
       // Find unconnected neuron pair
       do {
         let inputIndex = Math.floor(Math.random() * (this.neurons.length - this.outputSize))
-        const outputIndex = Math.floor(Math.random() * (this.neurons.length - this.inputSize) + this.inputSize)
+        const outputIndex = Math.floor(Math.random() * (this.neurons.length - this.inputSize)) + this.inputSize
 
         // Skipping output layer
         if (inputIndex > this.inputSize) {
@@ -223,7 +226,7 @@ export class Brain {
   }
 
   clone () {
-    const brain = new Brain(this.inputSize, this.outputSize)
+    const brain = new Brain(this.inputSize, this.outputSize, false)
 
     for (const neuron of this.neurons) {
       brain.neurons.push(neuron.clone())
