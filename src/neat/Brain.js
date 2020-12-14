@@ -116,16 +116,17 @@ export class Brain {
   }
 
   addNeuronMutation () {
-    // Selecting (and disabling) a random connection
+    // Selecting a random connection
     const synapse = this.synapses[Math.floor(Math.random() * this.synapses.length)]
-    synapse.expressed = false
 
     // Creating a new Node and 2 new connections to replace the old connection
     const neuron = new Neuron(this.neurons.length, Neuron.HIDDEN)
     this.addNeuron(neuron)
-    this.synapses.push(new Synapse(synapse.input, neuron.id, 1, currentInnovation))
-    this.synapses.push(new Synapse(neuron.id, synapse.output, synapse.weight, currentInnovation))
+    this.synapses.push(new Synapse(synapse.input, neuron.id, 1, currentInnovation, synapse.expressed))
+    this.synapses.push(new Synapse(neuron.id, synapse.output, synapse.weight, currentInnovation, synapse.expressed))
 
+    // Disabling selected synapse
+    synapse.expressed = false
     currentInnovation++
   }
 
