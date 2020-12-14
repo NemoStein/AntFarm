@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/NemoStein/AntFarm#readme",
   "devDependencies": {
+    "canvas": "^2.6.1",
     "servor": "^4.0.2"
   }
 }
