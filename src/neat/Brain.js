@@ -187,7 +187,7 @@ export class Brain {
 
       if (validConnection) {
         const weight = Math.random() * 2 - 1
-        const synapse = new Synapse(input.id, output.id, weight, currentInnovation++)
+        const synapse = new Synapse(input.id, output.id, weight, currentInnovation)
 
         // Check circular reference
         const checkList = /** @type {List<Synapse>} */ (new List())
@@ -219,6 +219,7 @@ export class Brain {
 
         if (!loopFound) {
           this.addSynapse(synapse)
+          currentInnovation++
           break
         }
       }
