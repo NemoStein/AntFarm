@@ -1,4 +1,5 @@
 import { CanvasRenderer } from './CanvasRenderer.js'
+import { Neuron } from '../neat/Neuron.js'
 
 /** @typedef {import('../neat/Brain.js').Brain} Brain */
 /** @typedef {import('../neat/Synapse.js').Synapse} Synapse */
@@ -21,42 +22,73 @@ export class NeuralNetworkRenderer extends CanvasRenderer {
     this.cache = {}
     this.clear()
 
-    const vSpacing = this.height / Math.max(brain.inputSize, brain.outputSize)
+    const offset = 10
+    const width = this.width - offset * 2
+    const height = this.height - offset * 2
+    const spacing = height / Math.max(brain.inputSize, brain.outputSize)
 
     for (let i = 0; i < brain.inputSize; i++) {
       const input = brain.neurons[i]
-      this.drawNode(0, vSpacing * i - (vSpacing * brain.inputSize - this.height) / 2, input.id)
+      this.drawNode(
+        offset,
+        offset + spacing * i - (spacing * brain.inputSize - height) / 2,
+        input
+      )
     }
 
     for (let i = 0; i < brain.outputSize; i++) {
       const output = brain.neurons[i + brain.inputSize]
-      this.drawNode(this.width - 15, vSpacing * i - (vSpacing * brain.outputSize - this.height) / 2, output.id)
+      this.drawNode(
+        offset + width - 12,
+        offset + spacing * i - (spacing * brain.outputSize - height) / 2,
+        output
+      )
     }
 
     const hiddenCount = brain.neurons.length - brain.inputSize - brain.outputSize
     for (let i = 0; i < hiddenCount; i++) {
       const hidden = brain.neurons[i + brain.inputSize + brain.outputSize]
-      this.drawNode(this.random(hidden.id, this.width * 0.8) + this.width * 0.1, this.random(hidden.id + brain.neurons.length, 70) + 15, hidden.id)
+      this.drawNode(
+        offset + this.random(hidden.id) * width * 0.8 + width * 0.1,
+        offset + this.random(hidden.id) * height * 0.5 + height * 0.25,
+        hidden
+      )
     }
 
     for (const synapse of brain.synapses) {
-      if (synapse.expressed) {
-        this.drawConnection(synapse)
-      }
+      this.drawConnection(synapse)
     }
   }
 
-  drawNode (x, y, id) {
-    if (!this.cache[id]) {
-      this.cache[id] = { x, y }
+  /**
+   *
+   * @param {number} x
+   * @param {number} y
+   * @param {Neuron} neuron
+   */
+  drawNode (x, y, neuron) {
+    x = Math.floor(x)
+    y = Math.floor(y)
 
-      this.context.font = '9px sans-serif'
-      this.context.textAlign = 'center'
-      this.context.fillStyle = 'gray'
-      this.context.strokeStyle = 'gray'
+    this.cache[neuron.id] = { x, y }
 
-      this.context.fillText(String(id), Math.floor(x) + 6, Math.floor(y) + 10)
-      this.context.strokeRect(Math.floor(x) + 0.5, Math.floor(y) + 0.5, 12, 12)
+    this.context.lineWidth = 1
+    this.context.font = '9px sans-serif'
+    this.context.textAlign = 'center'
+    this.context.fillStyle = 'gray'
+    this.context.strokeStyle = 'gray'
+
+    this.context.fillText(String(neuron.id + 1), x + 6, y + 10)
+    this.context.strokeRect(x + 0.5, y + 0.5, 12, 12)
+
+    const layer = neuron.layer
+    if (layer !== Neuron.HIDDEN) {
+      this.context.beginPath()
+      this.context.moveTo(x + (layer === Neuron.INPUT ? -7 : 14) + 0, y + 3.5 + 0)
+      this.context.lineTo(x + (layer === Neuron.INPUT ? -7 : 14) + 6, y + 3.5 + 3)
+      this.context.lineTo(x + (layer === Neuron.INPUT ? -7 : 14) + 0, y + 3.5 + 6)
+      this.context.closePath()
+      this.context.fill()
     }
   }
 
@@ -92,13 +124,19 @@ export class NeuralNetworkRenderer extends CanvasRenderer {
     )
 
     this.context.lineWidth = Math.abs(synapse.weight * 0.9) + 0.1
-    this.context.strokeStyle = synapse.weight > 0 ? 'blue' : 'red'
+    this.context.strokeStyle = synapse.expressed ? (synapse.weight > 0 ? 'blue' : 'red') : (synapse.weight > 0 ? 'rgb(200, 200, 220)' : 'rgb(220, 200, 200)')
     this.context.stroke()
     this.context.closePath()
+
+    this.context.font = '9px sans-serif'
+    this.context.textAlign = 'center'
+    this.context.fillStyle = 'gray'
+
+    this.context.fillText(`${synapse.innovation}: ${synapse.weight.toFixed(2)}`, distanceX / 3 + input.x, distanceY / 3 + input.y)
   }
 
-  random (seed, scale) {
+  random (seed) {
     const x = Math.sin(seed + this.seedOffset) * 10000
-    return (x - Math.floor(x)) * scale
+    return x - Math.floor(x)
   }
 }
