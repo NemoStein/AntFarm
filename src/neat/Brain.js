@@ -116,14 +116,8 @@ export class Brain {
   }
 
   addNeuronMutation () {
-    // Disabling a random expressed connection
-    let synapse
-
-    do {
-      synapse = this.synapses[Math.floor(Math.random() * this.synapses.length)]
-    }
-    while (!synapse.expressed)
-
+    // Selecting (and disabling) a random connection
+    const synapse = this.synapses[Math.floor(Math.random() * this.synapses.length)]
     synapse.expressed = false
 
     // Creating a new Node and 2 new connections to replace the old connection
