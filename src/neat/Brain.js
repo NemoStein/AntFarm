@@ -186,7 +186,7 @@ export class Brain {
       while (!validConnection && connectionAttempts--)
 
       if (validConnection) {
-        const weight = Math.random() * 2 - 1
+        const weight = Math.random() * 4 - 2
         const synapse = new Synapse(input.id, output.id, weight, currentInnovation)
 
         // Check circular reference
