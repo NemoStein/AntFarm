@@ -8,8 +8,9 @@ export class Brain {
   /**
    * @param {number} inputSize
    * @param {number} outputSize
+   * @param {boolean} populate
    */
-  constructor (inputSize, outputSize) {
+  constructor (inputSize, outputSize, populate = true) {
     this.inputSize = inputSize
     this.outputSize = outputSize
 
@@ -19,12 +20,14 @@ export class Brain {
     /** @type {Synapse[]} */
     this.synapses = []
 
-    for (let i = 0; i < inputSize; i++) {
-      this.neurons.push(new Neuron(this.neurons.length, Neuron.INPUT))
-    }
+    if (populate) {
+      for (let i = 0; i < inputSize; i++) {
+        this.neurons.push(new Neuron(this.neurons.length, Neuron.INPUT))
+      }
 
-    for (let i = 0; i < outputSize; i++) {
-      this.neurons.push(new Neuron(this.neurons.length, Neuron.OUTPUT))
+      for (let i = 0; i < outputSize; i++) {
+        this.neurons.push(new Neuron(this.neurons.length, Neuron.OUTPUT))
+      }
     }
   }
 
@@ -263,7 +266,32 @@ export class Brain {
     }
   }
 
+  /**
+   * @param {Brain} parent1 Most fit parent
+   * @param {Brain} parent2 Least fit parent
+   */
   static crossover (parent1, parent2) {
+    const child = new Brain(parent1.inputSize, parent1.outputSize, false)
 
+    for (const neuron of parent1.neurons) {
+      child.addNeuron(neuron.clone())
+    }
+
+    for (const synapse1 of parent1.synapses) {
+      let disjoint = true
+      for (const synapse2 of parent2.synapses) {
+        if (synapse1.innovation === synapse2.innovation) {
+          child.addSynapse((Math.random() < 0.5 ? synapse1 : synapse2).clone())
+          disjoint = false
+          break
+        }
+      }
+
+      if (disjoint) {
+        child.addSynapse(synapse1.clone())
+      }
+    }
+
+    return child
   }
 }
