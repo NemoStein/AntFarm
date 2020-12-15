@@ -127,7 +127,7 @@ export class Brain {
     const neuron = new Neuron(this.neurons.length, Neuron.HIDDEN)
     this.addNeuron(neuron)
     this.synapses.push(new Synapse(synapse.input, neuron.id, 1, currentInnovation++))
-    this.synapses.push(new Synapse(neuron.id, synapse.output, synapse.weight, currentInnovation++, synapse.expressed))
+    this.synapses.push(new Synapse(neuron.id, synapse.output, synapse.weight, currentInnovation++))
 
     // Disabling selected synapse
     synapse.expressed = false
@@ -280,7 +280,18 @@ export class Brain {
       let disjoint = true
       for (const synapse2 of parent2.synapses) {
         if (synapse1.innovation === synapse2.innovation) {
-          child.addSynapse((Math.random() < 0.5 ? synapse1 : synapse2).clone())
+          const synapse = (Math.random() < 0.5 ? synapse1 : synapse2).clone()
+          synapse.expressed = !((!synapse1.expressed || !synapse2.expressed) && Math.random() < 0.3)
+
+          if (Math.random() < 0.1) {
+            synapse.weight = Math.random() * 4 - 2
+          }
+
+          if (Math.random() < 0.1 && synapse.expressed) {
+            synapse.expressed = false
+          }
+
+          child.addSynapse(synapse)
           disjoint = false
           break
         }

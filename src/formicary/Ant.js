@@ -5,8 +5,9 @@ import { Brain } from '../neat/Brain.js'
 export class Ant {
   /**
    * @param {Formicary} formicary
+   * @param {Brain} [brain]
    */
-  constructor (formicary) {
+  constructor (formicary, brain = null) {
     this.formicary = formicary
 
     this.x = 0
@@ -15,6 +16,8 @@ export class Ant {
     this.speed = 0.25
     this.cargo = null
     this.dead = false
+    this.age = 10000
+    this.fitness = 0
 
     this.traveled = 0
     this.travelThreshold = 0.5
@@ -27,6 +30,10 @@ export class Ant {
       right: { x: 0, y: 0 }
     }
 
+    /** @type {number[]} */
+    this.io = []
+
+    if (!brain) {
     /**
      * Brain input (6)
      * - Left food scent
@@ -42,27 +49,20 @@ export class Ant {
      * - Direction
      * - Pheromone
      */
-    this.brain = new Brain(6, 4)
-    this.brain.addSynapseMutation()
-
-    // for (let i = 0; i < 3; i++) {
-    //   if (Math.random() < 0.75) {
-    //     this.brain.addSynapse()
-    //   } else {
-    //     this.brain.addNeuron()
-    //   }
-    // }
-
-    // for (const synapse of this.brain.synapses) {
-    //   if (synapse.expressed) {
-    //     console.log(`${synapse.input} -> ${synapse.output} (${synapse.innovation})`)
-    //   }
-    // }
-
+      this.brain = new Brain(6, 4)
+      this.brain.addSynapseMutation()
+    } else {
+      this.brain = brain
+    }
     this.updateAntenna()
   }
 
   update () {
+    if (--this.age === 0) {
+      this.die()
+      return
+    }
+
     this.updateAntenna()
 
     const leftFoodScent = this.formicary.getFoodScentFrom(this.antennae.left.x, this.antennae.left.y)
@@ -74,27 +74,47 @@ export class Ant {
 
     const [hold, move, direction, pheromone] = this.brain.update(leftFoodScent, rightFoodScent, leftTrailScent, rightTrailScent, anthillDirection, carrying)
 
-    // console.log(`
-    //   Input:
-    //     [0,1]    food: ${leftFoodScent.toFixed(5)}, ${rightFoodScent.toFixed(5)}
-    //     [2,3]   trail: ${leftTrailScent.toFixed(5)}, ${rightTrailScent.toFixed(5)}
-    //     [4]   anthill: ${anthillDirection.toFixed(5)},
-    //     [5]  carrying: ${carrying.toFixed(5)}
-    //   Output:
-    //     [6]      hold: ${hold.toFixed(5)}
-    //     [7]      move: ${move.toFixed(5)}
-    //     [8] direction: ${direction.toFixed(5)}
-    //     [9] pheromone: ${pheromone.toFixed(5)}
-    // `)
+    this.io = [leftFoodScent, rightFoodScent, leftTrailScent, rightTrailScent, anthillDirection, carrying, hold, move, direction, pheromone]
+
+    // Fitness metrics (per tick):
+    const metrics = {
+      // Alive
+      alive: 0.01,
+      // Is carrying
+      carrying: 0, // 0.1,
+      // Carrying inside the anthill
+      carryingInside: 0, // 1.0,
+      // Not carrying near pheromone (others)
+      nearPheromone: 0, // 0.05,
+      // Not carrying near pheromone (others)
+      nearFood: 0.05,
+      // Not carrying near pheromone (others)
+      pickCargo: 50.0,
+      // Drop cargo inside anthill
+      dropCargo: 500.0
+    }
+
+    if (!this.dead) {
+      this.fitness += metrics.alive
+    }
+
+    const { x, y } = this
+    const insideAnthill = this.formicary.isInsideAnthill(x, y)
 
     if (this.pickDropCooldown-- <= 0) {
       if (this.cargo && hold < 0) {
-        this.formicary.dropFoodAt(this.x, this.y, this.cargo)
+        if (insideAnthill) {
+          this.fitness += metrics.dropCargo
+        } else {
+          this.formicary.dropFoodAt(this.x, this.y, this.cargo)
+        }
+
         this.cargo = null
         this.pickDropCooldown = this.pickDropTime
       } else if (!this.cargo && hold >= 0) {
         const food = this.formicary.pickFoodAt(this.x, this.y)
         if (food) {
+          this.fitness += metrics.pickCargo
           this.cargo = food
           this.pickDropCooldown = this.pickDropTime
         }
@@ -118,7 +138,28 @@ export class Ant {
 
     if (Math.random() < pheromone && this.traveled > this.travelThreshold) {
       this.traveled -= this.travelThreshold
-      this.formicary.dropPheromoneAt(this.x, this.y, 1)
+      this.formicary.dropPheromoneAt(this.x, this.y, 1, this)
+    }
+
+    if (this.cargo) {
+      this.fitness += metrics.carrying
+
+      if (insideAnthill) {
+        this.fitness += metrics.carryingInside
+      }
+    }
+
+    const pheromones = this.formicary.findPheromonesAround(x, y)
+    for (const pheromone of pheromones) {
+      if (pheromone.ant !== this) {
+        this.fitness += metrics.nearPheromone
+        break
+      }
+    }
+
+    const foods = this.formicary.findPheromonesAround(x, y)
+    if (foods.length > 0) {
+      this.fitness += metrics.nearFood
     }
   }
 

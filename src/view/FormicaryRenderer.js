@@ -10,8 +10,7 @@ export class FormicaryRenderer extends CanvasRenderer {
     const path = new Path2D()
     path.rect(0, 0, width, height)
 
-    this.findAnt = new Hitzone(path)
-    this.findAnt.action = cursor => (this.selectedAnt = this.findAntNear(cursor.x - this.x, cursor.y - this.y))
+    this.findAnt = new Hitzone(path, cursor => (this.selectedAnt = this.findAntNear(cursor.x - this.x, cursor.y - this.y)))
 
     this.hitzones.push(this.findAnt)
   }
@@ -32,13 +31,14 @@ export class FormicaryRenderer extends CanvasRenderer {
     this.context.stroke(anthillPath)
 
     this.context.fillStyle = 'rgba(255, 0, 255, .2)'
-    for (const { x, y } of formicary.pheromone) {
+    for (const { x, y } of formicary.pheromones) {
       this.context.fillRect(x - 1, y - 1, 2, 2)
     }
 
     this.context.fillStyle = 'brown'
-    for (const { x, y } of formicary.food) {
-      this.context.fillRect(x - 1, y - 1, 2, 2)
+    for (const { x, y, scent } of formicary.foods) {
+      const size = (scent - 50) / (100 - 50) * 2 + 1
+      this.context.fillRect(x - size * 0.5, y - size * 0.5, size, size)
     }
 
     for (const ant of formicary.ants) {

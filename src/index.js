@@ -32,13 +32,15 @@ document.addEventListener('DOMContentLoaded', () => {
     formicaryRenderer.render(formicary)
     formicaryRenderer.update(cursor)
 
-    let brain = formicary.getFittest().brain
+    let ant = formicary.getFittest()
     if (formicaryRenderer.selectedAnt != null) {
-      brain = formicaryRenderer.selectedAnt.brain
+      ant = formicaryRenderer.selectedAnt
     }
+
+    const brain = ant.brain
     controlsRenderer.brain = brain
 
-    neuralNetworkRenderer.render(brain)
+    neuralNetworkRenderer.render(brain, ant.io)
     neuralNetworkRenderer.update(cursor)
 
     controlsRenderer.render()
@@ -85,14 +87,10 @@ const buildFormicary = () => {
   const anthillX = Math.floor(Math.random() * 400 + 50)
   const anthillY = Math.floor(Math.random() * 400 + 50)
   const anthillRadius = 15
-  const population = 10
-
-  const formicary = new Formicary(width, height, anthillX, anthillY, anthillRadius, population)
-
+  const population = 25
   const food = 250
-  for (let i = 0; i < food; i++) {
-    formicary.dropFoodAt(Math.floor(Math.random() * 500), Math.floor(Math.random() * 500), 75)
-  }
+
+  const formicary = new Formicary(width, height, anthillX, anthillY, anthillRadius, population, food)
 
   return formicary
 }

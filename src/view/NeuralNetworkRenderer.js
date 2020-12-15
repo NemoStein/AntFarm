@@ -17,8 +17,9 @@ export class NeuralNetworkRenderer extends CanvasRenderer {
 
   /**
    * @param {Brain} brain
+   * @param {number[]} io
    */
-  render (brain) {
+  render (brain, io) {
     this.cache = {}
     this.clear()
 
@@ -29,30 +30,26 @@ export class NeuralNetworkRenderer extends CanvasRenderer {
 
     for (let i = 0; i < brain.inputSize; i++) {
       const input = brain.neurons[i]
-      this.drawNode(
-        offset,
-        offset + spacing * i - (spacing * brain.inputSize - height) / 2,
-        input
-      )
+      const x = offset + 30
+      const y = offset + spacing * i - (spacing * brain.inputSize - height) / 2
+      this.drawNode(x, y, input)
+      this.drawText(x - 10, y + 10, io[i].toFixed(2))
     }
 
     for (let i = 0; i < brain.outputSize; i++) {
       const output = brain.neurons[i + brain.inputSize]
-      this.drawNode(
-        offset + width - 12,
-        offset + spacing * i - (spacing * brain.outputSize - height) / 2,
-        output
-      )
+      const x = offset + width - 12 - 30
+      const y = offset + spacing * i - (spacing * brain.outputSize - height) / 2
+      this.drawNode(x, y, output)
+      this.drawText(x + 50, y + 9, io[i + brain.inputSize].toFixed(2))
     }
 
     const hiddenCount = brain.neurons.length - brain.inputSize - brain.outputSize
     for (let i = 0; i < hiddenCount; i++) {
       const hidden = brain.neurons[i + brain.inputSize + brain.outputSize]
-      this.drawNode(
-        offset + this.random(hidden.id) * width * 0.8 + width * 0.1,
-        offset + this.random(hidden.id) * height * 0.5 + height * 0.25,
-        hidden
-      )
+      const x = offset + this.random(hidden.id) * width * 0.8 + width * 0.1
+      const y = offset + this.random(hidden.id) * height * 0.5 + height * 0.25
+      this.drawNode(x, y, hidden)
     }
 
     for (const synapse of brain.synapses) {
@@ -124,15 +121,37 @@ export class NeuralNetworkRenderer extends CanvasRenderer {
     )
 
     this.context.lineWidth = Math.abs(synapse.weight * 0.9) + 0.1
-    this.context.strokeStyle = synapse.expressed ? (synapse.weight > 0 ? 'blue' : 'red') : (synapse.weight > 0 ? 'rgb(200, 200, 220)' : 'rgb(220, 200, 200)')
+    this.context.strokeStyle = synapse.expressed
+      ? (synapse.weight > 0 ? 'blue' : 'red')
+      : (synapse.weight > 0
+          ? 'rgb(180, 180, 220)'
+          : 'rgb(220, 180, 180)')
+
+    if (!synapse.expressed) {
+      this.context.setLineDash([2, 2])
+    }
+
     this.context.stroke()
     this.context.closePath()
+    this.context.setLineDash([])
 
     this.context.font = '9px sans-serif'
-    this.context.textAlign = 'center'
     this.context.fillStyle = 'gray'
 
     this.context.fillText(`${synapse.innovation}: ${synapse.weight.toFixed(2)}`, distanceX / 3 + input.x, distanceY / 3 + input.y)
+  }
+
+  /**
+   * @param {number} x
+   * @param {number} y
+   * @param {string} text
+   */
+  drawText (x, y, text) {
+    this.context.font = '9px sans-serif'
+    this.context.textAlign = 'right'
+    this.context.fillStyle = 'gray'
+
+    this.context.fillText(text, x, y)
   }
 
   random (seed) {
